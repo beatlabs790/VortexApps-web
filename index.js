@@ -169,7 +169,7 @@ let isLocalDb = false;
 async function initializeRealtimeSync() {
     loadGlobalState();
 
-    // 1. Try local repository DB first
+    // 1. Check if local repository DB API is available
     try {
         const response = await fetch('/api/state');
         if (response.ok) {
@@ -178,54 +178,79 @@ async function initializeRealtimeSync() {
             isLocalDb = true;
             saveGlobalState();
             renderAllUI();
-            logToDashboard("Synced from local repository DB (db.json).");
-            updateSyncIndicator(true);
+            logToDashboard("Local repository DB detected (db.json).");
             const statusEl = document.getElementById('db-status-text');
-            if (statusEl) statusEl.textContent = "Local repository DB connected";
-            return;
+            if (statusEl) statusEl.textContent = "Local repository DB active";
         }
     } catch (e) {
-        // Local DB API server not running, fall back to Firebase
+        // Local DB API server not running
     }
 
-    // 2. Fallback to Firebase
+    // 2. Connect Firebase for multi-device real-time sync
     if (db) {
         const statusEl = document.getElementById('db-status-text');
-        if (statusEl) statusEl.textContent = "Firebase connected";
+        if (statusEl) {
+            statusEl.textContent = isLocalDb 
+                ? "Hybrid sync active (Local DB + Firebase)" 
+                : "Firebase connected";
+        }
+        updateSyncIndicator(true);
 
-        // Seed if empty
+        // Seed if empty, using VORTEX_STATE loaded from local DB or cache
         db.ref('vortex_state').once('value')
             .then(snapshot => {
                 if (!snapshot.val()) {
-                    db.ref('vortex_state').set(DEFAULT_STATE)
-                        .then(() => logToDashboard("Database seeded with defaults."))
-                        .catch(err => logToDashboard("Seed failed: " + err.message));
+                    db.ref('vortex_state').set(VORTEX_STATE)
+                        .then(() => logToDashboard("Seeded Firebase with current state."))
+                        .catch(err => logToDashboard("Firebase seed failed: " + err.message));
                 }
-            })
-            .catch(err => {
-                logToDashboard("Read blocked: " + err.message + " — Update your Firebase Database Rules.");
-                updateSyncIndicator(false);
             });
 
-        // Real-time listener
-        db.ref('vortex_state').on('value', snapshot => {
+        // Real-time listener: syncs all devices in real-time
+        db.ref('vortex_state').on('value', async (snapshot) => {
             const val = snapshot.val();
             if (val) {
+                // Check if anything actually changed to prevent redundant writes
+                const changed = JSON.stringify(VORTEX_STATE) !== JSON.stringify(val);
                 VORTEX_STATE = val;
                 saveGlobalState();
                 renderAllUI();
                 logToDashboard("Synced from Firebase.");
+
+                // If running local server, sync real-time Firebase changes to db.json
+                if (isLocalDb && changed) {
+                    try {
+                        await fetch('/api/state', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(VORTEX_STATE)
+                        });
+                        logToDashboard("Saved Firebase updates to local db.json.");
+                    } catch (err) {
+                        console.error("Local db.json sync error:", err);
+                    }
+                }
             }
         });
     } else {
         renderAllUI();
-        logToDashboard("Running in offline simulation mode.");
+        logToDashboard(isLocalDb ? "Running in local repository mode." : "Running in offline simulation mode.");
     }
 }
 
 async function syncStateToDatabase() {
     saveGlobalState();
 
+    // 1. Sync to Firebase (this propagates real-time updates to all connected devices)
+    if (db) {
+        db.ref('vortex_state').set(VORTEX_STATE)
+            .then(() => logToDashboard("Pushed changes to Firebase."))
+            .catch(err => logToDashboard("Firebase write failed: " + err.message));
+    } else {
+        logToDashboard("Firebase offline. Saved to local storage.");
+    }
+
+    // 2. If running local server, also save to local repository db.json
     if (isLocalDb) {
         try {
             const response = await fetch('/api/state', {
@@ -234,20 +259,13 @@ async function syncStateToDatabase() {
                 body: JSON.stringify(VORTEX_STATE)
             });
             if (response.ok) {
-                logToDashboard("Saved to local repository DB (db.json) & synced to GitHub.");
-            } else {
-                logToDashboard("Save to local DB failed.");
+                logToDashboard("Saved changes to local db.json & pushed to GitHub.");
             }
         } catch (e) {
-            logToDashboard("Local API error: " + e.message);
+            logToDashboard("Local DB sync failed: " + e.message);
         }
-    } else if (db) {
-        db.ref('vortex_state').set(VORTEX_STATE)
-            .then(() => logToDashboard("Saved to Firebase."))
-            .catch(err => logToDashboard("Save failed: " + err.message));
-    } else {
-        logToDashboard("Saved locally to browser storage.");
     }
+
     renderAllUI();
 }
 
