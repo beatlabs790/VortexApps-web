@@ -900,12 +900,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkAdminAuthSession();
     initCookieConsent();
 
-    // Dismiss loading screen after content ready
-    window.addEventListener('load', () => {
-        setTimeout(dismissLoadingScreen, 400);
-    });
-    // Fallback: dismiss after 2.5s regardless
-    setTimeout(dismissLoadingScreen, 2500);
+    // Dismiss loading screen after exactly 1 second
+    setTimeout(dismissLoadingScreen, 1000);
 
     // Animate elements with class "reveal" that are in viewport
     const observer = new IntersectionObserver(entries => {
