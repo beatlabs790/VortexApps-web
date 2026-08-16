@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — VortexApps</title>
+    <meta name="description" content="Get in touch with VortexApps. We respond within 24 hours.">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="config.js"></script>
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <div id="announcement-bar"><span id="announcement-text"></span></div>
+
+    <nav id="main-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/logo.png" alt="VortexApps">
+                VortexApps
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="contact.html" class="nav-link active">Contact</a>
+            </div>
+            <div class="nav-right">
+                <a href="contact.html" class="btn btn-primary btn-sm">Get in touch</a>
+                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div style="padding: 140px 0 80px;">
+            <div class="container">
+                <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">Contact</span>
+                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3rem); margin-bottom: 16px; max-width: 560px;">
+                    Let's build something.
+                </h1>
+                <p class="reveal reveal-3" style="font-size: 1.0625rem; max-width: 440px;">
+                    We respond to every message. Tell us what you're working on.
+                </p>
+            </div>
+        </div>
+
+        <hr>
+
+        <section class="section">
+            <div class="container">
+                <div class="contact-grid">
+                    <!-- LEFT INFO -->
+                    <div class="contact-info reveal reveal-1">
+                        <div class="contact-detail">
+                            <div class="label" style="margin-bottom: 6px;">Email</div>
+                            <a href="mailto:beatwave790@gmail.com">beatwave790@gmail.com</a>
+                        </div>
+                        <div class="contact-detail">
+                            <div class="label" style="margin-bottom: 6px;">Discord</div>
+                            <a href="https://discord.gg/spbuDTePSR" target="_blank" rel="noopener">discord.gg/spbuDTePSR</a>
+                        </div>
+                        <div class="contact-detail">
+                            <div class="label" style="margin-bottom: 6px;">Instagram</div>
+                            <a href="https://instagram.com/akshansh_6969" target="_blank" rel="noopener">@akshansh_6969</a>
+                        </div>
+                        <div class="contact-detail">
+                            <div class="label" style="margin-bottom: 6px;">Location</div>
+                            <span>Patna, India &middot; Remote-first</span>
+                        </div>
+                        <div class="contact-detail">
+                            <div class="label" style="margin-bottom: 6px;">Response time</div>
+                            <span>Within 24 hours</span>
+                        </div>
+
+                        <!-- SUPPORT -->
+                        <div class="support-box" style="margin-top: 40px;">
+                            <span class="label" style="display: block; margin-bottom: 10px;">Support our work</span>
+                            <p style="font-size: 0.875rem; margin-bottom: 14px;">
+                                If our apps have helped you, consider supporting us via UPI. Completely optional.
+                            </p>
+                            <div class="upi-id">akshanshsinha67@axl</div>
+                            <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener"
+                               class="btn btn-secondary btn-sm" style="margin-top: 12px;">
+                                Open support page ↗
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT FORM -->
+                    <div class="contact-form reveal reveal-2">
+                        <form id="contact-form" onsubmit="submitContactForm(event)">
+                            <div class="form-group">
+                                <label class="form-label" for="contact-name">Your name</label>
+                                <input type="text" id="contact-name" class="form-input" placeholder="Aarav Sharma" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="contact-email">Email address</label>
+                                <input type="email" id="contact-email" class="form-input" placeholder="you@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="contact-subject">Subject</label>
+                                <input type="text" id="contact-subject" class="form-input" placeholder="Project inquiry / Question">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="contact-message">Message</label>
+                                <textarea id="contact-message" class="form-textarea" placeholder="Tell us about your project, what you need, and your timeline..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                Send message <i data-lucide="send" style="width:14px;height:14px;"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div>
+                    <div class="footer-brand">
+                        <img src="assets/logo.png" alt="VortexApps">
+                        VortexApps
+                    </div>
+                    <div class="footer-copy">© 2024 VortexApps. Made in India.</div>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Navigation</h4>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="services.html">Services</a>
+                    <a href="projects.html">Projects</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Connect</h4>
+                    <a href="mailto:beatwave790@gmail.com">beatwave790@gmail.com</a>
+                    <a href="https://discord.gg/spbuDTePSR" target="_blank" rel="noopener">Discord</a>
+                    <a href="https://instagram.com/akshansh_6969" target="_blank" rel="noopener">Instagram</a>
+                    <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener">Support us</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast"></div>
+</body>
+</html>

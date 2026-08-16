@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service — VortexApps</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="config.js"></script>
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <div id="announcement-bar"><span id="announcement-text"></span></div>
+
+    <nav id="main-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/logo.png" alt="VortexApps">
+                VortexApps
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="projects.html" class="nav-link">Projects</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-right">
+                <a href="contact.html" class="btn btn-primary btn-sm">Get in touch</a>
+                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div style="padding: 140px 0 80px;">
+            <div class="container" style="max-width: 720px;">
+                <span class="label" style="display: block; margin-bottom: 16px;">Legal</span>
+                <h1 style="font-size: 2.25rem; margin-bottom: 16px;">Terms of Service</h1>
+                <p style="margin-bottom: 48px;">Last updated: January 2024</p>
+
+                <div style="display: flex; flex-direction: column; gap: 32px;">
+                    <section>
+                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Use of Services</h2>
+                        <p>By accessing any VortexApps product or website, you agree to use them in a lawful manner. You may not use our services for any illegal or unauthorized purpose.</p>
+                    </section>
+                    <section>
+                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Intellectual Property</h2>
+                        <p>All content on this site — including code, design, and copy — is the property of VortexApps unless otherwise stated. You may not reproduce or distribute it without permission.</p>
+                    </section>
+                    <section>
+                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Disclaimer</h2>
+                        <p>Our services are provided "as is" without any warranty. VortexApps is not liable for any damages resulting from your use of our products or services.</p>
+                    </section>
+                    <section>
+                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Changes</h2>
+                        <p>We may update these terms at any time. Continued use of our services constitutes acceptance of any changes.</p>
+                    </section>
+                    <section>
+                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Contact</h2>
+                        <p>Questions? Email us at <a href="mailto:beatwave790@gmail.com" style="color: var(--accent);">beatwave790@gmail.com</a>.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div>
+                    <div class="footer-brand">
+                        <img src="assets/logo.png" alt="VortexApps">
+                        VortexApps
+                    </div>
+                    <div class="footer-copy">© 2024 VortexApps. Made in India.</div>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Connect</h4>
+                    <a href="mailto:beatwave790@gmail.com">beatwave790@gmail.com</a>
+                    <a href="https://discord.gg/spbuDTePSR" target="_blank" rel="noopener">Discord</a>
+                    <a href="https://instagram.com/akshansh_6969" target="_blank" rel="noopener">Instagram</a>
+                    <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener">Support us</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div id="toast"></div>
+</body>
+</html>

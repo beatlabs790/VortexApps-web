@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects — VortexApps</title>
+    <meta name="description" content="Explore VortexApps projects — BeatWave, WaveMirror, and Onyx Chat. Built with precision, shipped to real users.">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="config.js"></script>
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <div id="announcement-bar"><span id="announcement-text"></span></div>
+
+    <nav id="main-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/logo.png" alt="VortexApps">
+                VortexApps
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="projects.html" class="nav-link active">Projects</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-right">
+                <a href="contact.html" class="btn btn-primary btn-sm">Get in touch</a>
+                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- PAGE HEADER -->
+        <div style="padding: 140px 0 80px;">
+            <div class="container">
+                <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">Projects</span>
+                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3rem); margin-bottom: 20px; max-width: 600px;">
+                    Things we've shipped.
+                </h1>
+                <p class="reveal reveal-3" style="font-size: 1.0625rem; max-width: 480px;">
+                    Real products, live users. Every project here is in active production.
+                </p>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- PROJECTS GRID -->
+        <section class="section">
+            <div class="container">
+                <div class="home-projects-grid" id="dynamic-projects-grid">
+                    <!-- Renders via JS -->
+                </div>
+
+                <!-- MAKE IN INDIA -->
+                <div class="make-india-banner reveal reveal-3" style="margin-top: 56px;">
+                    <img src="assets/Make_In_India.png" alt="Make In India">
+                    <div class="make-india-text">
+                        <h4>Proud to be Made in India</h4>
+                        <p>VortexApps is a home-grown engineering team. Every product we build is designed, developed, and shipped from India.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- STATS + STORY -->
+        <section class="section">
+            <div class="container">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;">
+                    <div>
+                        <span class="label" style="display: block; margin-bottom: 16px;">By the numbers</span>
+                        <div class="stat-num" id="downloads-counter" style="font-size: 3.5rem; margin-bottom: 8px; letter-spacing: -0.05em;">152+</div>
+                        <div style="font-size: 1rem; color: var(--text-muted); margin-bottom: 32px;">Total installs across all products.</div>
+                        <a href="contact.html" class="btn btn-secondary">Commission a project <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></a>
+                    </div>
+                    <div>
+                        <blockquote style="border-left: 2px solid var(--border); padding-left: 24px;">
+                            <p style="font-size: 1rem; color: var(--text); font-style: italic; margin-bottom: 16px;">
+                                "Our vision for BeatWave was bold — zero ads, high fidelity audio. We shipped v1 knowing it was rough. Then v2.1. Then kept going. That's how we build things."
+                            </p>
+                            <cite style="font-size: 0.8125rem; color: var(--text-muted); font-style: normal; font-weight: 600;">— VortexApps Engineering</cite>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div>
+                    <div class="footer-brand">
+                        <img src="assets/logo.png" alt="VortexApps">
+                        VortexApps
+                    </div>
+                    <div class="footer-copy">© 2024 VortexApps. Made in India.</div>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Navigation</h4>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="services.html">Services</a>
+                    <a href="projects.html">Projects</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Connect</h4>
+                    <a href="mailto:beatwave790@gmail.com">beatwave790@gmail.com</a>
+                    <a href="https://discord.gg/spbuDTePSR" target="_blank" rel="noopener">Discord</a>
+                    <a href="https://instagram.com/akshansh_6969" target="_blank" rel="noopener">Instagram</a>
+                    <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener">Support us</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast"></div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Page Not Found | VortexApps</title>
+    <meta name="description" content="This page doesn't exist.">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="config.js"></script>
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <div class="page-404">
+        <div class="page-404-inner">
+
+            <!-- Logo -->
+            <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:0.9375rem;letter-spacing:-0.02em;color:var(--text);margin-bottom:48px;text-decoration:none;">
+                <img src="assets/logo.png" alt="VortexApps" style="width:24px;height:24px;border-radius:4px;object-fit:cover;">
+                VortexApps
+            </a>
+
+            <span class="page-404-code">ERROR 404</span>
+            <div class="page-404-num">404</div>
+            <h1 class="page-404-title">Page not found</h1>
+            <p class="page-404-desc">
+                The page you're looking for doesn't exist or has been moved. 
+                Let's get you back on track.
+            </p>
+
+            <div class="page-404-actions">
+                <a href="index.html" class="btn btn-primary">
+                    <i data-lucide="home" style="width:14px;height:14px;"></i>
+                    Go home
+                </a>
+                <a href="projects.html" class="btn btn-secondary">
+                    See our work
+                </a>
+                <a href="contact.html" class="btn btn-secondary">
+                    Contact us
+                </a>
+            </div>
+
+            <!-- Subtle links -->
+            <div style="margin-top: 48px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a href="about.html" style="font-size:0.8125rem;color:var(--text-dim);">About</a>
+                <a href="services.html" style="font-size:0.8125rem;color:var(--text-dim);">Services</a>
+                <a href="privacy.html" style="font-size:0.8125rem;color:var(--text-dim);">Privacy</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

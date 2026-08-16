@@ -1,0 +1,823 @@
+/* ==========================================================================
+   VORTEXAPPS — CORE LOGIC ENGINE
+   Firebase sync, dynamic rendering, admin panel
+   ========================================================================== */
+
+// --- DEFAULT DATA ---
+const DEFAULT_STATE = {
+    downloads: "152+",
+    announcement: "",
+    projects: [
+        {
+            id: "beatwave",
+            name: "BeatWave",
+            desc: "A premium open-source music player built for zero-ad, high-fidelity audio streaming with personalized playback.",
+            type: "Mobile & Web App",
+            tech: "React, Tailwind, Node",
+            link: "https://beatwave.oneapp.dev",
+            status: "online",
+            logo: "assets/beatwave_logo.png"
+        },
+        {
+            id: "wavemirror",
+            name: "WaveMirror",
+            desc: "A fast search aggregator with instant results, movie reviews, and metadata visualization.",
+            type: "Web App",
+            tech: "HTML, CSS, JavaScript",
+            link: "https://wavemirrors.netlify.app",
+            status: "online",
+            logo: "assets/logo.png"
+        },
+        {
+            id: "onyx",
+            name: "Onyx Chat",
+            desc: "A low-latency, secure real-time messaging app with clean UI and modern websocket infrastructure.",
+            type: "Web App",
+            tech: "WebSockets, React, SQL",
+            link: "https://onyxchat.netlify.app",
+            status: "online",
+            logo: "assets/onyxchatlogoforapp.jpeg"
+        }
+    ],
+    team: [
+        {
+            id: "tm_aarav",
+            name: "Aarav Sharma",
+            role: "Co-Founder, UI/UX Designer",
+            insta: "aarav_sharma_sui",
+            portfolio: "aaravsharma.netlify.app"
+        },
+        {
+            id: "tm_akshansh",
+            name: "Akshansh Sinha",
+            role: "Co-Founder, Full-Stack Engineer",
+            insta: "akshansh_6969",
+            portfolio: "akshanshsinha.vercel.app"
+        }
+    ]
+};let VORTEX_STATE = {};
+let firebaseConfig = null;
+let adminPasswordHash = "006657998771eb1ef75d0a26f8824af99da8bf4f7261d3a4d896708286a618eb"; // fallback
+let db = null;
+
+// Helper to compute SHA-256
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);                    
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Load secrets from local .env or fallback config
+async function loadSecrets() {
+    try {
+        const response = await fetch('/.env');
+        if (!response.ok) throw new Error();
+        const text = await response.text();
+        const env = {};
+        text.split('\n').forEach(line => {
+            const parts = line.trim().split('=');
+            if (parts.length >= 2) {
+                const key = parts[0].trim();
+                const value = parts.slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
+                env[key] = value;
+            }
+        });
+
+        if (env.FIREBASE_API_KEY) {
+            firebaseConfig = {
+                apiKey: env.FIREBASE_API_KEY,
+                authDomain: env.FIREBASE_AUTH_DOMAIN,
+                databaseURL: env.FIREBASE_DATABASE_URL,
+                projectId: env.FIREBASE_PROJECT_ID,
+                storageBucket: env.FIREBASE_STORAGE_BUCKET,
+                messagingSenderId: env.FIREBASE_MESSAGING_SENDER_ID,
+                appId: env.FIREBASE_APP_ID,
+                measurementId: env.FIREBASE_MEASUREMENT_ID
+            };
+        }
+        if (env.ADMIN_PASSWORD_HASH) {
+            adminPasswordHash = env.ADMIN_PASSWORD_HASH;
+        }
+        console.log("Loaded secrets from .env");
+    } catch (e) {
+        // Fallback to window config
+        const systemConfig = window.VORTEXAPPS_CONFIG || {};
+        firebaseConfig = systemConfig.firebaseConfig || null;
+        adminPasswordHash = systemConfig.adminPasswordHash || "006657998771eb1ef75d0a26f8824af99da8bf4f7261d3a4d896708286a618eb";
+        console.log("Loaded configuration from config.js / fallback");
+    }
+}
+
+// --- STATE PERSISTENCE ---
+function loadGlobalState() {
+    const saved = localStorage.getItem('vortex_state');
+    if (saved) {
+        try {
+            VORTEX_STATE = JSON.parse(saved);
+            if (!VORTEX_STATE.projects) VORTEX_STATE.projects = DEFAULT_STATE.projects;
+            if (!VORTEX_STATE.team) VORTEX_STATE.team = DEFAULT_STATE.team;
+            if (!VORTEX_STATE.downloads) VORTEX_STATE.downloads = DEFAULT_STATE.downloads;
+            if (VORTEX_STATE.announcement === undefined) VORTEX_STATE.announcement = DEFAULT_STATE.announcement;
+        } catch (e) {
+            VORTEX_STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        }
+    } else {
+        VORTEX_STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+}
+
+function saveGlobalState() {
+    localStorage.setItem('vortex_state', JSON.stringify(VORTEX_STATE));
+}
+
+// --- FIREBASE INIT ---
+async function initFirebase() {
+    await loadSecrets();
+
+    if (typeof firebase !== 'undefined' && firebaseConfig) {
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.database();
+
+            if (firebase.auth) {
+                try {
+                    await firebase.auth().signInAnonymously();
+                    logToDashboard("Firebase: connected and authenticated.");
+                    updateSyncIndicator(true);
+                } catch (err) {
+                    logToDashboard("Firebase auth warning: " + err.message);
+                    updateSyncIndicator(false);
+                }
+            } else {
+                updateSyncIndicator(true);
+            }
+        } catch (e) {
+            console.error("Firebase init failed:", e);
+            updateSyncIndicator(false);
+        }
+    } else {
+        updateSyncIndicator(false);
+    }
+}
+
+// --- REAL-TIME SYNC INIT ---
+function initializeRealtimeSync() {
+    loadGlobalState();
+
+    if (db) {
+        const statusEl = document.getElementById('db-status-text');
+        if (statusEl) statusEl.textContent = "Firebase connected";
+
+        // Seed if empty
+        db.ref('vortex_state').once('value')
+            .then(snapshot => {
+                if (!snapshot.val()) {
+                    db.ref('vortex_state').set(DEFAULT_STATE)
+                        .then(() => logToDashboard("Database seeded with defaults."))
+                        .catch(err => logToDashboard("Seed failed: " + err.message));
+                }
+            })
+            .catch(err => {
+                logToDashboard("Read blocked: " + err.message + " — Update your Firebase Database Rules.");
+                updateSyncIndicator(false);
+            });
+
+        // Real-time listener
+        db.ref('vortex_state').on('value', snapshot => {
+            const val = snapshot.val();
+            if (val) {
+                VORTEX_STATE = val;
+                saveGlobalState();
+                renderAllUI();
+                logToDashboard("Synced from Firebase.");
+            }
+        });
+    } else {
+        renderAllUI();
+        logToDashboard("Running in local mode.");
+    }
+}
+
+function syncStateToDatabase() {
+    saveGlobalState();
+    if (db) {
+        db.ref('vortex_state').set(VORTEX_STATE)
+            .then(() => logToDashboard("Saved to Firebase."))
+            .catch(err => logToDashboard("Save failed: " + err.message));
+    } else {
+        logToDashboard("Saved locally.");
+    }
+    renderAllUI();
+}
+
+// --- RENDER ALL UI ---
+function renderAllUI() {
+    renderDownloads();
+    renderAnnouncement();
+    renderProjects();
+    renderTeam();
+    renderAdminForms();
+    renderAdminOverviewStats();
+}
+
+function renderDownloads() {
+    const els = document.querySelectorAll('#downloads-counter, #ov-downloads');
+    els.forEach(el => { if (el) el.textContent = VORTEX_STATE.downloads; });
+}
+
+function renderAnnouncement() {
+    const bar = document.getElementById('announcement-bar');
+    const text = document.getElementById('announcement-text');
+    const nav = document.getElementById('main-nav');
+
+    if (!bar) return;
+
+    if (VORTEX_STATE.announcement && VORTEX_STATE.announcement.trim()) {
+        bar.style.display = 'block';
+        if (text) text.textContent = VORTEX_STATE.announcement;
+
+        // Push nav below the bar
+        const barH = bar.offsetHeight;
+        if (nav) nav.style.top = barH + 'px';
+        document.body.style.paddingTop = (barH + 60) + 'px'; // bar + nav height
+    } else {
+        bar.style.display = 'none';
+        if (nav) nav.style.top = '0px';
+        document.body.style.paddingTop = '60px'; // nav height only
+    }
+}
+
+function renderProjects() {
+    const grid = document.getElementById('dynamic-projects-grid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+    VORTEX_STATE.projects.forEach(proj => {
+        const isOnline = proj.status === 'online';
+        const logoHTML = proj.logo && proj.logo.trim()
+            ? `<img src="${proj.logo}" alt="${proj.name}" class="project-card-logo">`
+            : `<div class="project-card-logo-placeholder"><i data-lucide="box" style="width:20px;height:20px;"></i></div>`;
+
+        grid.innerHTML += `
+            <div class="project-card">
+                ${logoHTML}
+                <div class="project-card-header">
+                    <h3>${proj.name}</h3>
+                    <span class="status-dot ${isOnline ? '' : 'offline'}">${isOnline ? 'Online' : 'Down'}</span>
+                </div>
+                <p>${proj.desc}</p>
+                <div class="project-card-footer">
+                    <div class="project-tags">
+                        <span class="tag">${proj.type}</span>
+                    </div>
+                    <a href="${proj.link}" target="_blank" rel="noopener" class="project-link-btn">
+                        Open <i data-lucide="arrow-up-right" style="width:12px;height:12px;"></i>
+                    </a>
+                </div>
+            </div>
+        `;
+    });
+
+    refreshIcons();
+}
+
+function renderTeam() {
+    const grid = document.getElementById('dynamic-team-grid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+    VORTEX_STATE.team.forEach(member => {
+        const initial = member.name ? member.name.charAt(0).toUpperCase() : '?';
+        const instaLink = member.insta
+            ? `<a href="https://instagram.com/${member.insta.replace('@','')}" target="_blank" rel="noopener" class="team-link">Instagram</a>`
+            : '';
+        const portLink = member.portfolio
+            ? `<a href="https://${member.portfolio}" target="_blank" rel="noopener" class="team-link">Portfolio</a>`
+            : '';
+
+        grid.innerHTML += `
+            <div class="team-card">
+                <div class="team-avatar">${initial}</div>
+                <div class="team-info">
+                    <div class="team-name">${member.name}</div>
+                    <div class="team-role">${member.role}</div>
+                    <div class="team-links">${instaLink}${portLink}</div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+// --- ADMIN PANEL RENDER ---
+function renderAdminForms() {
+    const dlInput = document.getElementById('admin-downloads');
+    if (dlInput) dlInput.value = VORTEX_STATE.downloads;
+
+    const annInput = document.getElementById('admin-announcement');
+    if (annInput) annInput.value = VORTEX_STATE.announcement;
+
+    renderAdminProjectsEditor();
+    renderAdminTeamList();
+}
+
+function renderAdminOverviewStats() {
+    const ov = document.getElementById('ov-downloads');
+    if (ov) ov.textContent = VORTEX_STATE.downloads;
+    const op = document.getElementById('ov-projects');
+    if (op) op.textContent = VORTEX_STATE.projects ? VORTEX_STATE.projects.length : 0;
+    const ot = document.getElementById('ov-team');
+    if (ot) ot.textContent = VORTEX_STATE.team ? VORTEX_STATE.team.length : 0;
+}
+
+function renderAdminProjectsEditor() {
+    const grid = document.getElementById('admin-projects-editor-grid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+    (VORTEX_STATE.projects || []).forEach(proj => {
+        const isOnline = proj.status === 'online';
+        const logoHTML = proj.logo && proj.logo.trim()
+            ? `<img src="${proj.logo}" alt="${proj.name}" class="admin-project-logo">`
+            : `<div style="width:36px;height:36px;border-radius:6px;background:var(--bg-muted);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="box" style="width:16px;height:16px;color:var(--text-dim);"></i></div>`;
+
+        grid.innerHTML += `
+            <div class="admin-project-card">
+                <div class="admin-project-card-header">
+                    ${logoHTML}
+                    <div>
+                        <div class="admin-project-name">${proj.name}</div>
+                    </div>
+                    <div class="admin-project-status">
+                        <span class="status-dot ${isOnline ? '' : 'offline'}">${isOnline ? 'Online' : 'Down'}</span>
+                    </div>
+                </div>
+                <div class="admin-input-group">
+                    <label class="admin-input-label">Project name</label>
+                    <input type="text" id="db-proj-name-${proj.id}" class="admin-input" value="${proj.name}">
+                </div>
+                <div class="admin-input-group">
+                    <label class="admin-input-label">Download / Site link</label>
+                    <input type="text" id="db-proj-link-${proj.id}" class="admin-input" value="${proj.link}">
+                </div>
+                <div class="admin-toggle">
+                    <input type="checkbox" id="db-proj-status-${proj.id}" ${isOnline ? 'checked' : ''}>
+                    <label class="admin-toggle-label" for="db-proj-status-${proj.id}">Mark as online</label>
+                </div>
+                <button onclick="updateIndividualProject('${proj.id}')" class="btn btn-primary btn-sm" style="width:100%;">Save changes</button>
+            </div>
+        `;
+    });
+
+    refreshIcons();
+}
+
+function renderAdminTeamList() {
+    const list = document.getElementById('admin-team-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+    if (!VORTEX_STATE.team || VORTEX_STATE.team.length === 0) {
+        list.innerHTML = `<p style="font-size:0.875rem;color:var(--text-muted);">No team members yet.</p>`;
+        return;
+    }
+
+    VORTEX_STATE.team.forEach(member => {
+        const initial = member.name ? member.name.charAt(0).toUpperCase() : '?';
+        list.innerHTML += `
+            <div class="admin-member-card">
+                <div class="admin-member-avatar">${initial}</div>
+                <div class="admin-member-fields">
+                    <div class="admin-input-group" style="margin-bottom:0;">
+                        <label class="admin-input-label">Name</label>
+                        <input type="text" class="admin-input" id="db-team-name-${member.id}" value="${member.name}">
+                    </div>
+                    <div class="admin-input-group" style="margin-bottom:0;">
+                        <label class="admin-input-label">Role</label>
+                        <input type="text" class="admin-input" id="db-team-role-${member.id}" value="${member.role}">
+                    </div>
+                    <div class="admin-input-group" style="margin-bottom:0;">
+                        <label class="admin-input-label">Instagram</label>
+                        <input type="text" class="admin-input" id="db-team-insta-${member.id}" value="${member.insta || ''}">
+                    </div>
+                    <div class="admin-input-group" style="margin-bottom:0;">
+                        <label class="admin-input-label">Portfolio</label>
+                        <input type="text" class="admin-input" id="db-team-port-${member.id}" value="${member.portfolio || ''}">
+                    </div>
+                </div>
+                <div class="admin-member-actions">
+                    <button onclick="updateTeamMemberInline('${member.id}')" class="btn btn-secondary btn-sm">Save</button>
+                    <button onclick="removeTeamMember('${member.id}')" class="btn btn-sm" style="border:1px solid rgba(239,68,68,0.3);color:var(--red);background:transparent;">Remove</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+// --- ADMIN WRITE FUNCTIONS ---
+function updateFirebaseStats() {
+    const input = document.getElementById('admin-downloads');
+    if (!input) return;
+    VORTEX_STATE.downloads = input.value.trim();
+    syncStateToDatabase();
+    showToast("Install count updated.");
+}
+window.updateFirebaseStats = updateFirebaseStats;
+
+function updateFirebaseAnnouncement() {
+    const input = document.getElementById('admin-announcement');
+    if (!input) return;
+    VORTEX_STATE.announcement = input.value.trim();
+    syncStateToDatabase();
+    showToast(VORTEX_STATE.announcement ? "Announcement set." : "Announcement cleared.");
+}
+window.updateFirebaseAnnouncement = updateFirebaseAnnouncement;
+
+function updateIndividualProject(projectId) {
+    const name = document.getElementById(`db-proj-name-${projectId}`)?.value.trim();
+    const link = document.getElementById(`db-proj-link-${projectId}`)?.value.trim();
+    const status = document.getElementById(`db-proj-status-${projectId}`)?.checked ? 'online' : 'maintenance';
+
+    if (!name) { showToast("Project name is required."); return; }
+
+    const idx = VORTEX_STATE.projects.findIndex(p => p.id === projectId);
+    if (idx !== -1) {
+        VORTEX_STATE.projects[idx].name = name;
+        VORTEX_STATE.projects[idx].link = link;
+        VORTEX_STATE.projects[idx].status = status;
+        syncStateToDatabase();
+        showToast(`"${name}" saved.`);
+    }
+}
+window.updateIndividualProject = updateIndividualProject;
+
+function updateTeamMemberInline(memberId) {
+    const name = document.getElementById(`db-team-name-${memberId}`)?.value.trim();
+    const role = document.getElementById(`db-team-role-${memberId}`)?.value.trim();
+    const insta = document.getElementById(`db-team-insta-${memberId}`)?.value.trim();
+    const portfolio = document.getElementById(`db-team-port-${memberId}`)?.value.trim();
+
+    if (!name || !role) { showToast("Name and role are required."); return; }
+
+    const idx = VORTEX_STATE.team.findIndex(t => t.id === memberId);
+    if (idx !== -1) {
+        VORTEX_STATE.team[idx] = { ...VORTEX_STATE.team[idx], name, role, insta, portfolio };
+        syncStateToDatabase();
+        showToast(`${name} updated.`);
+    }
+}
+window.updateTeamMemberInline = updateTeamMemberInline;
+
+function addTeamMember() {
+    const name = document.getElementById('tm-name')?.value.trim();
+    const role = document.getElementById('tm-role')?.value.trim();
+    const insta = document.getElementById('tm-insta')?.value.trim();
+    const portfolio = document.getElementById('tm-portfolio')?.value.trim();
+
+    if (!name || !role) { showToast("Name and role are required."); return; }
+
+    VORTEX_STATE.team.push({ id: 'tm_' + Date.now(), name, role, insta, portfolio });
+    syncStateToDatabase();
+
+    ['tm-name','tm-role','tm-insta','tm-portfolio'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+
+    showToast(`${name} added.`);
+}
+window.addTeamMember = addTeamMember;
+
+function removeTeamMember(memberId) {
+    const member = VORTEX_STATE.team.find(m => m.id === memberId);
+    VORTEX_STATE.team = VORTEX_STATE.team.filter(m => m.id !== memberId);
+    syncStateToDatabase();
+    showToast(member ? `${member.name} removed.` : "Member removed.");
+}
+window.removeTeamMember = removeTeamMember;
+
+// --- ADMIN AUTH ---
+async function verifyAdmin() {
+    const passInput = document.getElementById('admin-password');
+    if (!passInput) return;
+
+    const hash = await sha256(passInput.value);
+    if (hash === adminPasswordHash) {
+        sessionStorage.setItem('admin_authorized', 'true');
+
+        const authPanel = document.getElementById('admin-auth-panel');
+        if (authPanel) authPanel.style.display = 'none';
+
+        const dashboard = document.getElementById('admin-dashboard-panel');
+        if (dashboard) dashboard.classList.add('active');
+
+        passInput.value = '';
+        logToDashboard("Signed in successfully.");
+        showToast("Welcome back.");
+
+        const geminiKey = document.getElementById('admin-gemini-key');
+        if (geminiKey) {
+            const systemConfig = window.VORTEXAPPS_CONFIG || {};
+            geminiKey.value = localStorage.getItem('gemini_api_key') || systemConfig.geminiApiKey || '';
+        }
+    } else {
+        showToast("Incorrect password.");
+    }
+}
+window.verifyAdmin = verifyAdmin;
+
+function lockAdminPanel() {
+    sessionStorage.removeItem('admin_authorized');
+    const dashboard = document.getElementById('admin-dashboard-panel');
+    if (dashboard) dashboard.classList.remove('active');
+    const authPanel = document.getElementById('admin-auth-panel');
+    if (authPanel) authPanel.style.display = 'flex';
+    showToast("Signed out.");
+}
+window.lockAdminPanel = lockAdminPanel;
+
+function checkAdminAuthSession() {
+    if (sessionStorage.getItem('admin_authorized') === 'true') {
+        const authPanel = document.getElementById('admin-auth-panel');
+        if (authPanel) authPanel.style.display = 'none';
+        const dashboard = document.getElementById('admin-dashboard-panel');
+        if (dashboard) dashboard.classList.add('active');
+        logToDashboard("Session restored.");
+    }
+}
+
+// --- ADMIN TAB SWITCHING ---
+function switchAdminTab(tabId) {
+    document.querySelectorAll('.admin-tab').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
+
+    const tab = document.getElementById('admin-tab-' + tabId);
+    if (tab) tab.classList.add('active');
+
+    const btn = document.getElementById('tab-btn-' + tabId);
+    if (btn) btn.classList.add('active');
+}
+window.switchAdminTab = switchAdminTab;
+
+function updateLocalGeminiKey() {
+    const input = document.getElementById('admin-gemini-key');
+    if (!input) return;
+    const key = input.value.trim();
+    if (key) {
+        localStorage.setItem('gemini_api_key', key);
+        showToast("API key saved.");
+    } else {
+        localStorage.removeItem('gemini_api_key');
+        showToast("API key cleared.");
+    }
+}
+window.updateLocalGeminiKey = updateLocalGeminiKey;
+
+// --- SYNC INDICATOR ---
+function updateSyncIndicator(isConnected) {
+    const dots = document.querySelectorAll('.admin-sync-dot, #settings-sync-dot');
+    const label = document.getElementById('admin-sync-label');
+    const statusText = document.getElementById('db-status-text');
+
+    dots.forEach(dot => {
+        if (dot) {
+            dot.classList.toggle('offline', !isConnected);
+        }
+    });
+
+    if (label) label.textContent = isConnected ? 'Firebase synced' : 'Local mode';
+    if (statusText) statusText.textContent = isConnected ? 'Firebase connected' : 'Not connected — check Firebase rules';
+}
+
+// --- ADMIN LOG ---
+function logToDashboard(msg) {
+    const log = document.getElementById('admin-log');
+    if (!log) return;
+    const now = new Date();
+    const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    const entry = document.createElement('div');
+    entry.className = 'admin-log-entry';
+    entry.innerHTML = `<span class="ts">[${ts}]</span> <span class="msg">${msg}</span>`;
+    log.appendChild(entry);
+    log.scrollTop = log.scrollHeight;
+}
+
+// --- TOAST ---
+let toastTimer = null;
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Keep legacy name for compatibility
+function triggerSystemPing(msg) { showToast(msg); }
+window.triggerSystemPing = triggerSystemPing;
+
+// --- CONTACT FORM ---
+function submitContactForm(e) {
+    e.preventDefault();
+    showToast("Message sent! We'll respond within 24 hours.");
+    e.target.reset();
+}
+window.submitContactForm = submitContactForm;
+
+// --- MOBILE NAV ---
+function toggleNav() {
+    const nav = document.getElementById('main-nav');
+    if (nav) nav.classList.toggle('nav-open');
+}
+window.toggleNav = toggleNav;
+
+// --- UTILITY ---
+function refreshIcons() {
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// --- COOKIE CONSENT ---
+function initCookieConsent() {
+    // Skip on admin page
+    if (window.location.pathname.includes('admin')) return;
+    // Already accepted/declined
+    if (localStorage.getItem('cookie_consent')) return;
+
+    // Inject banner HTML
+    const banner = document.createElement('div');
+    banner.id = 'cookie-consent';
+    banner.innerHTML = `
+        <span class="cookie-icon">🍪</span>
+        <div class="cookie-text">
+            <h4>We use cookies</h4>
+            <p>We use essential cookies to keep the site running. See our <a href="privacy.html">Privacy Policy</a> for details.</p>
+        </div>
+        <div class="cookie-actions">
+            <button class="btn btn-secondary btn-sm" onclick="declineCookies()">Decline</button>
+            <button class="btn btn-primary btn-sm" onclick="acceptCookies()">Accept</button>
+        </div>
+    `;
+    document.body.appendChild(banner);
+
+    // Animate in after short delay
+    setTimeout(() => banner.classList.add('show'), 600);
+}
+
+function acceptCookies() {
+    localStorage.setItem('cookie_consent', 'accepted');
+    dismissCookieBanner();
+}
+window.acceptCookies = acceptCookies;
+
+function declineCookies() {
+    localStorage.setItem('cookie_consent', 'declined');
+    dismissCookieBanner();
+}
+window.declineCookies = declineCookies;
+
+function dismissCookieBanner() {
+    const banner = document.getElementById('cookie-consent');
+    if (!banner) return;
+    banner.classList.remove('show');
+    setTimeout(() => banner.remove(), 350);
+}
+
+// --- LOADING SCREEN ---
+function initLoadingScreen() {
+    // Apply saved theme immediately before render to avoid flash
+    const saved = localStorage.getItem('vortex_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+
+    const loader = document.createElement('div');
+    loader.id = 'loading-screen';
+    loader.innerHTML = `
+        <div class="ls-logo">
+            <img src="assets/logo.png" alt="VortexApps">
+            VortexApps
+        </div>
+        <div class="ls-spinner"></div>
+    `;
+    document.body.prepend(loader);
+}
+
+function dismissLoadingScreen() {
+    const loader = document.getElementById('loading-screen');
+    if (!loader) return;
+    loader.classList.add('fade-out');
+    setTimeout(() => loader.remove(), 450);
+}
+
+// --- DARK / LIGHT THEME ---
+function initThemeToggle() {
+    // Inject toggle button into nav's nav-right div
+    const navRight = document.querySelector('.nav-right');
+    if (!navRight) return;
+
+    const btn = document.createElement('button');
+    btn.className = 'theme-toggle';
+    btn.setAttribute('aria-label', 'Toggle theme');
+    btn.setAttribute('title', 'Toggle dark/light mode');
+    btn.onclick = toggleTheme;
+    btn.innerHTML = `
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/>
+            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+            <line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>
+            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+        </svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    `;
+
+    // Insert before "Get in touch" button
+    navRight.insertBefore(btn, navRight.firstChild);
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('vortex_theme', next);
+}
+window.toggleTheme = toggleTheme;
+
+// --- ADD NEW PROJECT ---
+function addProject() {
+    const name      = document.getElementById('np-name')?.value.trim();
+    const desc      = document.getElementById('np-desc')?.value.trim();
+    const type      = document.getElementById('np-type')?.value.trim();
+    const tech      = document.getElementById('np-tech')?.value.trim();
+    const link      = document.getElementById('np-link')?.value.trim();
+    const logo      = document.getElementById('np-logo')?.value.trim();
+
+    if (!name || !link) { showToast("Project name and link are required."); return; }
+
+    const newProj = {
+        id: 'proj_' + Date.now(),
+        name,
+        desc: desc || '',
+        type: type || 'Web App',
+        tech: tech || '',
+        link,
+        status: 'online',
+        logo: logo || ''
+    };
+
+    if (!VORTEX_STATE.projects) VORTEX_STATE.projects = [];
+    VORTEX_STATE.projects.push(newProj);
+    syncStateToDatabase();
+
+    // Clear form
+    ['np-name','np-desc','np-type','np-tech','np-link','np-logo'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+
+    showToast(`"${name}" added.`);
+}
+window.addProject = addProject;
+
+// --- BOOT ---
+// Apply theme before DOM paint to avoid flash
+(function() {
+    const saved = localStorage.getItem('vortex_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
+
+document.addEventListener('DOMContentLoaded', async () => {
+    initLoadingScreen();
+    initThemeToggle();
+    refreshIcons();
+    await initFirebase();
+    initializeRealtimeSync();
+    checkAdminAuthSession();
+    initCookieConsent();
+
+    // Dismiss loading screen after content ready
+    window.addEventListener('load', () => {
+        setTimeout(dismissLoadingScreen, 400);
+    });
+    // Fallback: dismiss after 2.5s regardless
+    setTimeout(dismissLoadingScreen, 2500);
+
+    // Animate elements with class "reveal" that are in viewport
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        el.style.animationPlayState = 'paused';
+        observer.observe(el);
+    });
+});
+
+
