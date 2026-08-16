@@ -1620,3 +1620,51 @@ footer {
     flex-wrap: wrap;
 }
 
+/* ==========================================================================
+   MAINTENANCE MODE OVERLAY
+   ========================================================================== */
+#maintenance-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background-color: var(--body-bg);
+    background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+    background-size: 28px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+}
+
+.maintenance-card {
+    max-width: 460px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: var(--shadow-lg);
+}
+
+.maintenance-icon {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.maintenance-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.maintenance-desc {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+

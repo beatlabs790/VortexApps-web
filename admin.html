@@ -282,6 +282,18 @@
 
                     <div class="admin-card">
                         <div class="admin-card-title" style="margin-bottom: 4px;">
+                            <i data-lucide="shield-alert"></i>
+                            Maintenance Mode
+                        </div>
+                        <div class="admin-card-desc">Enable to prevent public access to the website.</div>
+                        <div class="admin-toggle" style="margin-top: 16px;">
+                            <input type="checkbox" id="admin-maintenance-toggle" onchange="toggleMaintenanceMode(this.checked)">
+                            <label class="admin-toggle-label" for="admin-maintenance-toggle">Enable Maintenance Mode</label>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <div class="admin-card-title" style="margin-bottom: 4px;">
                             <i data-lucide="database"></i>
                             Firebase Status
                         </div>

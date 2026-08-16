@@ -7,6 +7,7 @@
 const DEFAULT_STATE = {
     downloads: "152+",
     announcement: "",
+    maintenanceMode: false,
     projects: [
         {
             id: "beatwave",
@@ -119,6 +120,7 @@ function loadGlobalState() {
             if (!VORTEX_STATE.team) VORTEX_STATE.team = DEFAULT_STATE.team;
             if (!VORTEX_STATE.downloads) VORTEX_STATE.downloads = DEFAULT_STATE.downloads;
             if (VORTEX_STATE.announcement === undefined) VORTEX_STATE.announcement = DEFAULT_STATE.announcement;
+            if (VORTEX_STATE.maintenanceMode === undefined) VORTEX_STATE.maintenanceMode = DEFAULT_STATE.maintenanceMode;
         } catch (e) {
             VORTEX_STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
         }
@@ -273,6 +275,7 @@ async function syncStateToDatabase() {
 function renderAllUI() {
     renderDownloads();
     renderAnnouncement();
+    renderMaintenanceMode();
     renderProjects();
     renderTeam();
     renderAdminForms();
@@ -836,6 +839,50 @@ function addProject() {
     showToast(`"${name}" added.`);
 }
 window.addProject = addProject;
+
+// --- MAINTENANCE MODE ---
+function renderMaintenanceMode() {
+    const isMaintenance = VORTEX_STATE.maintenanceMode || false;
+    const isAdminPage = window.location.pathname.includes('admin');
+
+    if (isAdminPage) {
+        const toggle = document.getElementById('admin-maintenance-toggle');
+        if (toggle) toggle.checked = isMaintenance;
+        return; // Do not apply overlay to admin dashboard
+    }
+
+    let overlay = document.getElementById('maintenance-overlay');
+
+    if (isMaintenance) {
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'maintenance-overlay';
+            overlay.innerHTML = `
+                <div class="maintenance-card">
+                    <span class="maintenance-icon">🛠️</span>
+                    <h1 class="maintenance-title">Under Maintenance</h1>
+                    <p class="maintenance-desc">
+                        VortexApps is currently undergoing scheduled updates. 
+                        We will be back online shortly. Thank you for your patience.
+                    </p>
+                    <div style="font-size:0.75rem;color:var(--text-dim);font-family:var(--mono);">
+                        VortexApps Systems &middot; Patna, IN
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+    } else {
+        if (overlay) overlay.remove();
+    }
+}
+
+function toggleMaintenanceMode(isEnabled) {
+    VORTEX_STATE.maintenanceMode = isEnabled;
+    syncStateToDatabase();
+    showToast(isEnabled ? "Maintenance Mode enabled." : "Maintenance Mode disabled.");
+}
+window.toggleMaintenanceMode = toggleMaintenanceMode;
 
 // --- BOOT ---
 // Apply theme before DOM paint to avoid flash
