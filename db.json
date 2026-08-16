@@ -1,0 +1,52 @@
+{
+  "downloads": "152+",
+  "announcement": "",
+  "projects": [
+    {
+      "id": "beatwave",
+      "name": "BeatWave",
+      "desc": "A premium open-source music player built for zero-ad, high-fidelity audio streaming with personalized playback.",
+      "type": "Mobile & Web App",
+      "tech": "React, Tailwind, Node",
+      "link": "https://beatwave.oneapp.dev",
+      "status": "online",
+      "logo": "assets/beatwave_logo.png"
+    },
+    {
+      "id": "wavemirror",
+      "name": "WaveMirror",
+      "desc": "A fast search aggregator with instant results, movie reviews, and metadata visualization.",
+      "type": "Web App",
+      "tech": "HTML, CSS, JavaScript",
+      "link": "https://wavemirrors.netlify.app",
+      "status": "online",
+      "logo": "assets/wavemirror.png"
+    },
+    {
+      "id": "onyx",
+      "name": "Onyx Chat",
+      "desc": "A low-latency, secure real-time messaging app with clean UI and modern websocket infrastructure.",
+      "type": "Web App",
+      "tech": "WebSockets, React, SQL",
+      "link": "https://onyxchat.netlify.app",
+      "status": "online",
+      "logo": "assets/onyxchatlogoforapp.jpeg"
+    }
+  ],
+  "team": [
+    {
+      "id": "tm_aarav",
+      "name": "Aarav Sharma",
+      "role": "Co-Founder, UI/UX Designer",
+      "insta": "aarav_sharma_sui",
+      "portfolio": "aaravsharma.netlify.app"
+    },
+    {
+      "id": "tm_akshansh",
+      "name": "Akshansh Sinha",
+      "role": "Co-Founder, Full-Stack Engineer",
+      "insta": "akshansh_6969",
+      "portfolio": "akshanshsinha.vercel.app"
+    }
+  ]
+}

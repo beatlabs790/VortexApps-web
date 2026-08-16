@@ -163,10 +163,32 @@ async function initFirebase() {
     }
 }
 
+let isLocalDb = false;
+
 // --- REAL-TIME SYNC INIT ---
-function initializeRealtimeSync() {
+async function initializeRealtimeSync() {
     loadGlobalState();
 
+    // 1. Try local repository DB first
+    try {
+        const response = await fetch('/api/state');
+        if (response.ok) {
+            const data = await response.json();
+            VORTEX_STATE = data;
+            isLocalDb = true;
+            saveGlobalState();
+            renderAllUI();
+            logToDashboard("Synced from local repository DB (db.json).");
+            updateSyncIndicator(true);
+            const statusEl = document.getElementById('db-status-text');
+            if (statusEl) statusEl.textContent = "Local repository DB connected";
+            return;
+        }
+    } catch (e) {
+        // Local DB API server not running, fall back to Firebase
+    }
+
+    // 2. Fallback to Firebase
     if (db) {
         const statusEl = document.getElementById('db-status-text');
         if (statusEl) statusEl.textContent = "Firebase connected";
@@ -197,18 +219,34 @@ function initializeRealtimeSync() {
         });
     } else {
         renderAllUI();
-        logToDashboard("Running in local mode.");
+        logToDashboard("Running in offline simulation mode.");
     }
 }
 
-function syncStateToDatabase() {
+async function syncStateToDatabase() {
     saveGlobalState();
-    if (db) {
+
+    if (isLocalDb) {
+        try {
+            const response = await fetch('/api/state', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(VORTEX_STATE)
+            });
+            if (response.ok) {
+                logToDashboard("Saved to local repository DB (db.json) & synced to GitHub.");
+            } else {
+                logToDashboard("Save to local DB failed.");
+            }
+        } catch (e) {
+            logToDashboard("Local API error: " + e.message);
+        }
+    } else if (db) {
         db.ref('vortex_state').set(VORTEX_STATE)
             .then(() => logToDashboard("Saved to Firebase."))
             .catch(err => logToDashboard("Save failed: " + err.message));
     } else {
-        logToDashboard("Saved locally.");
+        logToDashboard("Saved locally to browser storage.");
     }
     renderAllUI();
 }
