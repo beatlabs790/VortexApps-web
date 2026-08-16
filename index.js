@@ -26,7 +26,7 @@ const DEFAULT_STATE = {
             tech: "HTML, CSS, JavaScript",
             link: "https://wavemirrors.netlify.app",
             status: "online",
-            logo: "assets/logo.png"
+            logo: "assets/wavemirror.png"
         },
         {
             id: "onyx",
