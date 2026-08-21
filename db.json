@@ -1,53 +1,67 @@
 {
-  "downloads": "152+",
-  "announcement": "",
+  "announcement": "We Are Hiring! please contact us on discord.",
+  "downloads": "1700+",
   "maintenanceMode": false,
   "projects": [
     {
+      "desc": "A premium, open-source streaming alternative player designed for zero advertisement audio delivery and personalized playback engines.",
       "id": "beatwave",
+      "link": "https://beatwave.de5.net",
+      "logo": "assets/beatwave_logo.png",
       "name": "BeatWave",
-      "desc": "A premium open-source music player built for zero-ad, high-fidelity audio streaming with personalized playback.",
-      "type": "Mobile & Web App",
+      "status": "online",
       "tech": "React, Tailwind, Node",
-      "link": "https://beatwave.oneapp.dev",
-      "status": "online",
-      "logo": "assets/beatwave_logo.png"
+      "type": "Mobile & Web App"
     },
     {
+      "desc": "A highly responsive search aggregator featuring instant query results, movie reviews, and metadata visualization engines.",
       "id": "wavemirror",
+      "link": "https://wavemirror.vercel.app",
+      "logo": "assets/logo.png",
       "name": "WaveMirror",
-      "desc": "A fast search aggregator with instant results, movie reviews, and metadata visualization.",
-      "type": "Web App",
-      "tech": "HTML, CSS, JavaScript",
-      "link": "https://wavemirrors.netlify.app",
       "status": "online",
-      "logo": "assets/wavemirror.png"
+      "tech": "HTML, CSS, Vanilla JS",
+      "type": "Web Aggregator"
     },
     {
+      "desc": "A low-latency, secure real-time messaging application designed with clean UI aesthetics and modern websocket database pipelines.",
       "id": "onyx",
+      "link": "https://onyxchat.de5.net",
+      "logo": "assets/onyxchatlogoforapp.jpeg",
       "name": "Onyx Chat",
-      "desc": "A low-latency, secure real-time messaging app with clean UI and modern websocket infrastructure.",
-      "type": "Web App",
-      "tech": "WebSockets, React, SQL",
-      "link": "https://onyxchat.netlify.app",
       "status": "online",
-      "logo": "assets/onyxchatlogoforapp.jpeg"
+      "tech": "WebSockets, React, SQL",
+      "type": "Web System"
     }
   ],
   "team": [
     {
       "id": "tm_aarav",
-      "name": "Aarav Sharma",
-      "role": "Co-Founder, UI/UX Designer",
       "insta": "aarav_sharma_sui",
-      "portfolio": "aaravsharma.netlify.app"
+      "name": "Aarav Sharma",
+      "portfolio": "aaravsharma.netlify.app",
+      "role": "Co-Founder // UI/UX Designer"
     },
     {
       "id": "tm_akshansh",
-      "name": "Akshansh Sinha",
-      "role": "Co-Founder, Full-Stack Engineer",
       "insta": "akshansh_6969",
-      "portfolio": "akshanshsinha.vercel.app"
+      "name": "Akshansh Sinha",
+      "portfolio": "akshanshsinha.vercel.app",
+      "role": "Co-Founder // Full-Stack Engr"
+    },
+    {
+      "id": "tm_1786890863722",
+      "insta": "precizerr",
+      "name": "Aarav Singh",
+      "portfolio": "",
+      "role": "Ui/Ux/frontend"
+    },
+    {
+      "id": "tm_1786891006330",
+      "insta": "imarshh.3",
+      "name": "Arshh",
+      "portfolio": "https://arshit-gautam.vercel.app/",
+      "role": "Ui/Ux/frontend"
     }
   ]
 }
