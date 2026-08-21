@@ -3,7 +3,7 @@
    Dark-first. Black & grey. Bold editorial aesthetic.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap');
 
 /* --- TOKENS (Dark Default) --- */
 :root {
@@ -26,8 +26,8 @@
     --orange:        #F59E0B;
     --blue:          #3B82F6;
 
-    --font:          'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --mono:          'JetBrains Mono', 'Fira Code', monospace;
+    --font:          'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono:          'Geist Mono', 'JetBrains Mono', 'Fira Code', monospace;
 
     --radius-sm:     4px;
     --radius:        8px;
@@ -84,6 +84,51 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    position: relative;
+}
+
+/* Moving Grid Background */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background-image: 
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
+    opacity: 0.18;
+    animation: gridAnimation 60s linear infinite;
+    pointer-events: none;
+}
+
+/* Ambient Moving Radial Glows */
+body::after {
+    content: "";
+    position: fixed;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    z-index: -3;
+    background: 
+        radial-gradient(circle at 30% 40%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+    animation: glowAnimation 40s infinite linear;
+}
+
+@keyframes gridAnimation {
+    from { background-position: 0 0; }
+    to { background-position: 50px 50px; }
+}
+
+@keyframes glowAnimation {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
 }
 
 img { max-width: 100%; display: block; }

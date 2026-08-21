@@ -1,18 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 — Page Not Found | VortexApps</title>
     <meta name="description" content="This page doesn't exist.">
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="404 — Page Not Found | VortexApps">
     <meta property="og:description" content="This page doesn't exist.">
     <meta property="og:image" content="assets/og_image.jpg">
-
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="404 — Page Not Found | VortexApps">
     <meta property="twitter:description" content="This page doesn't exist.">
@@ -24,21 +20,27 @@
     <script src="index.js" defer></script>
 </head>
 <body>
-    <div class="page-404">
-        <div class="page-404-inner">
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="ls-logo">
+            <img src="assets/logo.png" alt="VortexApps">
+            VortexApps
+        </div>
+        <div class="ls-spinner"></div>
+    </div>
 
+    <div class="page-404-wrap">
+        <div>
             <!-- Logo -->
-            <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:0.9375rem;letter-spacing:-0.02em;color:var(--text);margin-bottom:48px;text-decoration:none;">
+            <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:0.9375rem;letter-spacing:-0.02em;color:var(--text);margin-bottom:32px;text-decoration:none;">
                 <img src="assets/logo.png" alt="VortexApps" style="width:24px;height:24px;border-radius:4px;object-fit:cover;">
                 VortexApps
             </a>
 
-            <span class="page-404-code">ERROR 404</span>
             <div class="page-404-num">404</div>
             <h1 class="page-404-title">Page not found</h1>
             <p class="page-404-desc">
-                The page you're looking for doesn't exist or has been moved. 
-                Let's get you back on track.
+                The page you're looking for doesn't exist or has been moved.
             </p>
 
             <div class="page-404-actions">
@@ -64,11 +66,5 @@
     </div>
 
     <div id="toast"></div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        });
-    </script>
 </body>
 </html>

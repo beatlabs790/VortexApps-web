@@ -1,24 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About — VortexApps</title>
     <meta name="description" content="Meet the team behind VortexApps — a two-person engineering team building high-performance software from India.">
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="About — VortexApps">
     <meta property="og:description" content="Meet the team behind VortexApps — a two-person engineering team building high-performance software from India.">
     <meta property="og:image" content="assets/og_image.jpg">
-
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="About — VortexApps">
     <meta property="twitter:description" content="Meet the team behind VortexApps — a two-person engineering team building high-performance software from India.">
     <meta property="twitter:image" content="assets/og_image.jpg">
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="index.css">
+    <style>
+        .about-values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .value-card {
+            background: var(--bg-card);
+            padding: 28px;
+            transition: background 0.18s;
+        }
+        .value-card:hover { background: var(--bg-card-hover); }
+        .value-num {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            font-family: var(--mono);
+            margin-bottom: 12px;
+        }
+        .value-card h3 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+        .value-card p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -27,8 +60,19 @@
     <script src="index.js" defer></script>
 </head>
 <body>
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="ls-logo">
+            <img src="assets/logo.png" alt="VortexApps">
+            VortexApps
+        </div>
+        <div class="ls-spinner"></div>
+    </div>
+
+    <!-- ANNOUNCEMENT BAR -->
     <div id="announcement-bar"><span id="announcement-text"></span></div>
 
+    <!-- NAV -->
     <nav id="main-nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">
@@ -51,19 +95,21 @@
         </div>
     </nav>
 
+    <!-- MAIN -->
     <main>
-        <div class="container">
-            <!-- ABOUT HERO -->
-            <div class="about-hero">
-                <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">About us</span>
-                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3rem); margin-bottom: 20px;">
-                    A small team.<br>Serious about software.
-                </h1>
-                <p class="reveal reveal-3" style="font-size: 1.0625rem; max-width: 520px;">
-                    VortexApps is Aarav and Akshansh — two engineers based in Patna, India. We build products we'd want to use ourselves: fast, clean, and reliable.
-                </p>
+        <section class="section-sm">
+            <div class="container">
+                <div class="about-hero">
+                    <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">About us</span>
+                    <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3.5rem); margin-bottom: 20px; font-weight: 800; letter-spacing: -0.04em;">
+                        A small team.<br>Serious about software.
+                    </h1>
+                    <p class="reveal reveal-3" style="font-size: 1rem; max-width: 520px; color: var(--text-muted); line-height: 1.7;">
+                        VortexApps is Aarav and Akshansh — two engineers based in Patna, India. We build products we'd want to use ourselves: fast, clean, and reliable.
+                    </p>
+                </div>
             </div>
-        </div>
+        </section>
 
         <hr>
 
@@ -110,10 +156,12 @@
             </div>
         </section>
 
+        <hr>
+
         <!-- CTA -->
         <section class="section-sm">
             <div class="container">
-                <div class="cta-strip" style="margin: 0;">
+                <div class="cta-strip">
                     <h2>Want to work together?</h2>
                     <p>We take on a limited number of projects. Reach out early.</p>
                     <a href="contact.html" class="btn btn-primary btn-lg">Contact us</a>
@@ -122,6 +170,7 @@
         </section>
     </main>
 
+    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-inner">

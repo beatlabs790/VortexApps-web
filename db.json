@@ -17,7 +17,7 @@
       "desc": "A highly responsive search aggregator featuring instant query results, movie reviews, and metadata visualization engines.",
       "id": "wavemirror",
       "link": "https://wavemirror.vercel.app",
-      "logo": "assets/logo.png",
+      "logo": "assets/wavemirror.png",
       "name": "WaveMirror",
       "status": "online",
       "tech": "HTML, CSS, Vanilla JS",

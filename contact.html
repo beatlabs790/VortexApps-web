@@ -1,24 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact — VortexApps</title>
     <meta name="description" content="Get in touch with VortexApps. We respond within 24 hours.">
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Contact — VortexApps">
     <meta property="og:description" content="Get in touch with VortexApps. We respond within 24 hours.">
     <meta property="og:image" content="assets/og_image.jpg">
-
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Contact — VortexApps">
     <meta property="twitter:description" content="Get in touch with VortexApps. We respond within 24 hours.">
     <meta property="twitter:image" content="assets/og_image.jpg">
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="index.css">
+    <style>
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+        }
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+        .contact-detail {
+            margin-bottom: 24px;
+        }
+        .contact-detail a {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--text);
+            text-decoration: underline;
+        }
+        .contact-detail span {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+        }
+        .support-box {
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+        }
+        .upi-id {
+            font-family: var(--mono);
+            font-size: 0.8125rem;
+            color: var(--text);
+            background: var(--bg);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .form-input, .form-textarea {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 0.875rem;
+            padding: 10px 12px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--border-bright);
+        }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -27,8 +95,19 @@
     <script src="index.js" defer></script>
 </head>
 <body>
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="ls-logo">
+            <img src="assets/logo.png" alt="VortexApps">
+            VortexApps
+        </div>
+        <div class="ls-spinner"></div>
+    </div>
+
+    <!-- ANNOUNCEMENT BAR -->
     <div id="announcement-bar"><span id="announcement-text"></span></div>
 
+    <!-- NAV -->
     <nav id="main-nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">
@@ -51,18 +130,19 @@
         </div>
     </nav>
 
+    <!-- MAIN -->
     <main>
-        <div style="padding: 140px 0 80px;">
+        <section class="section-sm">
             <div class="container">
                 <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">Contact</span>
-                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3rem); margin-bottom: 16px; max-width: 560px;">
+                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3.5rem); margin-bottom: 16px; font-weight: 800; letter-spacing: -0.04em;">
                     Let's build something.
                 </h1>
-                <p class="reveal reveal-3" style="font-size: 1.0625rem; max-width: 440px;">
+                <p class="reveal reveal-3" style="font-size: 1rem; max-width: 440px; color: var(--text-muted); line-height: 1.7;">
                     We respond to every message. Tell us what you're working on.
                 </p>
             </div>
-        </div>
+        </section>
 
         <hr>
 
@@ -95,14 +175,15 @@
                         <!-- SUPPORT -->
                         <div class="support-box" style="margin-top: 40px;">
                             <span class="label" style="display: block; margin-bottom: 10px;">Support our work</span>
-                            <p style="font-size: 0.875rem; margin-bottom: 14px;">
+                            <p style="font-size: 0.8125rem; margin-bottom: 14px; color: var(--text-muted); line-height: 1.5;">
                                 If our apps have helped you, consider supporting us via UPI. Completely optional.
                             </p>
                             <div class="upi-id">akshanshsinha67@axl</div>
-                            <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener"
-                               class="btn btn-secondary btn-sm" style="margin-top: 12px;">
-                                Open support page ↗
-                            </a>
+                            <div style="margin-top: 12px;">
+                                <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">
+                                    Open support page ↗
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -125,7 +206,7 @@
                                 <label class="form-label" for="contact-message">Message</label>
                                 <textarea id="contact-message" class="form-textarea" placeholder="Tell us about your project, what you need, and your timeline..." required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 8px;">
                                 Send message <i data-lucide="send" style="width:14px;height:14px;"></i>
                             </button>
                         </form>
@@ -135,6 +216,7 @@
         </section>
     </main>
 
+    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-inner">

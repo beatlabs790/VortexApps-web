@@ -1,18 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms of Service — VortexApps</title>
     <meta name="description" content="Terms of Service for VortexApps. Read our terms and conditions for using our website and services.">
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Terms of Service — VortexApps">
     <meta property="og:description" content="Terms of Service for VortexApps. Read our terms and conditions for using our website and services.">
     <meta property="og:image" content="assets/og_image.jpg">
-
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Terms of Service — VortexApps">
     <meta property="twitter:description" content="Terms of Service for VortexApps. Read our terms and conditions for using our website and services.">
@@ -27,8 +23,19 @@
     <script src="index.js" defer></script>
 </head>
 <body>
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="ls-logo">
+            <img src="assets/logo.png" alt="VortexApps">
+            VortexApps
+        </div>
+        <div class="ls-spinner"></div>
+    </div>
+
+    <!-- ANNOUNCEMENT BAR -->
     <div id="announcement-bar"><span id="announcement-text"></span></div>
 
+    <!-- NAV -->
     <nav id="main-nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">
@@ -51,39 +58,35 @@
         </div>
     </nav>
 
+    <!-- MAIN -->
     <main>
         <div style="padding: 140px 0 80px;">
             <div class="container" style="max-width: 720px;">
                 <span class="label" style="display: block; margin-bottom: 16px;">Legal</span>
-                <h1 style="font-size: 2.25rem; margin-bottom: 16px;">Terms of Service</h1>
-                <p style="margin-bottom: 48px;">Last updated: January 2024</p>
+                <h1 style="font-size: 2.25rem; margin-bottom: 16px; font-weight: 800; letter-spacing: -0.04em;">Terms of Service</h1>
+                <p style="margin-bottom: 48px; color: var(--text-dim); font-size: 0.875rem;">Last updated: January 2024</p>
 
-                <div style="display: flex; flex-direction: column; gap: 32px;">
-                    <section>
-                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Use of Services</h2>
-                        <p>By accessing any VortexApps product or website, you agree to use them in a lawful manner. You may not use our services for any illegal or unauthorized purpose.</p>
-                    </section>
-                    <section>
-                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Intellectual Property</h2>
-                        <p>All content on this site — including code, design, and copy — is the property of VortexApps unless otherwise stated. You may not reproduce or distribute it without permission.</p>
-                    </section>
-                    <section>
-                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Disclaimer</h2>
-                        <p>Our services are provided "as is" without any warranty. VortexApps is not liable for any damages resulting from your use of our products or services.</p>
-                    </section>
-                    <section>
-                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Changes</h2>
-                        <p>We may update these terms at any time. Continued use of our services constitutes acceptance of any changes.</p>
-                    </section>
-                    <section>
-                        <h2 style="font-size: 1.25rem; margin-bottom: 12px;">Contact</h2>
-                        <p>Questions? Email us at <a href="mailto:beatwave790@gmail.com" style="color: var(--accent);">beatwave790@gmail.com</a>.</p>
-                    </section>
+                <div class="legal-content">
+                    <h2>Use of Services</h2>
+                    <p>By accessing any VortexApps product or website, you agree to use them in a lawful manner. You may not use our services for any illegal or unauthorized purpose.</p>
+
+                    <h2>Intellectual Property</h2>
+                    <p>All content on this site — including code, design, and copy — is the property of VortexApps unless otherwise stated. You may not reproduce or distribute it without permission.</p>
+
+                    <h2>Disclaimer</h2>
+                    <p>Our services are provided "as is" without any warranty. VortexApps is not liable for any damages resulting from your use of our products or services.</p>
+
+                    <h2>Changes</h2>
+                    <p>We may update these terms at any time. Continued use of our services constitutes acceptance of any changes.</p>
+
+                    <h2>Contact</h2>
+                    <p>Questions? Email us at <a href="mailto:beatwave790@gmail.com">beatwave790@gmail.com</a>.</p>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-inner">
@@ -93,6 +96,14 @@
                         VortexApps
                     </div>
                     <div class="footer-copy">© 2024 VortexApps. Made in India.</div>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Navigation</h4>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="services.html">Services</a>
+                    <a href="projects.html">Projects</a>
+                    <a href="contact.html">Contact</a>
                 </div>
                 <div class="footer-links-group">
                     <h4>Connect</h4>
@@ -109,6 +120,7 @@
             </div>
         </div>
     </footer>
+
     <div id="toast"></div>
 </body>
 </html>

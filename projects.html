@@ -1,24 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects — VortexApps</title>
     <meta name="description" content="Explore VortexApps projects — BeatWave, WaveMirror, and Onyx Chat. Built with precision, shipped to real users.">
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Projects — VortexApps">
     <meta property="og:description" content="Explore VortexApps projects — BeatWave, WaveMirror, and Onyx Chat. Built with precision, shipped to real users.">
     <meta property="og:image" content="assets/og_image.jpg">
-
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Projects — VortexApps">
     <meta property="twitter:description" content="Explore VortexApps projects — BeatWave, WaveMirror, and Onyx Chat. Built with precision, shipped to real users.">
     <meta property="twitter:image" content="assets/og_image.jpg">
-    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link class="tab-icon" rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="index.css">
+    <style>
+        .make-india-banner {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+        }
+        .make-india-banner img {
+            height: 40px;
+            object-fit: contain;
+            filter: grayscale(1) brightness(1.4);
+        }
+        [data-theme="light"] .make-india-banner img {
+            filter: grayscale(1) contrast(1.2);
+        }
+        .make-india-text h4 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+        .make-india-text p {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+        .projects-story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        @media (max-width: 768px) {
+            .projects-story-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -27,8 +65,19 @@
     <script src="index.js" defer></script>
 </head>
 <body>
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="ls-logo">
+            <img src="assets/logo.png" alt="VortexApps">
+            VortexApps
+        </div>
+        <div class="ls-spinner"></div>
+    </div>
+
+    <!-- ANNOUNCEMENT BAR -->
     <div id="announcement-bar"><span id="announcement-text"></span></div>
 
+    <!-- NAV -->
     <nav id="main-nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">
@@ -51,19 +100,19 @@
         </div>
     </nav>
 
+    <!-- MAIN -->
     <main>
-        <!-- PAGE HEADER -->
-        <div style="padding: 140px 0 80px;">
+        <section class="section-sm">
             <div class="container">
                 <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">Projects</span>
-                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3rem); margin-bottom: 20px; max-width: 600px;">
+                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3.5rem); margin-bottom: 20px; font-weight: 800; letter-spacing: -0.04em;">
                     Things we've shipped.
                 </h1>
-                <p class="reveal reveal-3" style="font-size: 1.0625rem; max-width: 480px;">
+                <p class="reveal reveal-3" style="font-size: 1rem; max-width: 480px; color: var(--text-muted); line-height: 1.7;">
                     Real products, live users. Every project here is in active production.
                 </p>
             </div>
-        </div>
+        </section>
 
         <hr>
 
@@ -78,7 +127,7 @@
                 <div class="make-india-banner reveal reveal-3" style="margin-top: 56px;">
                     <img src="assets/Make_In_India.png" alt="Make In India">
                     <div class="make-india-text">
-                        <h4>Proud to be Made in India</h4>
+                        <h4>Proudly Made in India</h4>
                         <p>VortexApps is a home-grown engineering team. Every product we build is designed, developed, and shipped from India.</p>
                     </div>
                 </div>
@@ -90,19 +139,19 @@
         <!-- STATS + STORY -->
         <section class="section">
             <div class="container">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;">
-                    <div>
+                <div class="projects-story-grid">
+                    <div class="reveal reveal-2">
                         <span class="label" style="display: block; margin-bottom: 16px;">By the numbers</span>
-                        <div class="stat-num" id="downloads-counter" style="font-size: 3.5rem; margin-bottom: 8px; letter-spacing: -0.05em;">152+</div>
-                        <div style="font-size: 1rem; color: var(--text-muted); margin-bottom: 32px;">Total installs across all products.</div>
+                        <div class="stat-num" id="downloads-counter" style="font-size: 3.5rem; font-weight: 800; line-height: 1; margin-bottom: 8px; letter-spacing: -0.05em; color: var(--text);">152+</div>
+                        <div style="font-size: 0.9375rem; color: var(--text-muted); margin-bottom: 32px;">Total installs across all products.</div>
                         <a href="contact.html" class="btn btn-secondary">Commission a project <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></a>
                     </div>
-                    <div>
+                    <div class="reveal reveal-3">
                         <blockquote style="border-left: 2px solid var(--border); padding-left: 24px;">
-                            <p style="font-size: 1rem; color: var(--text); font-style: italic; margin-bottom: 16px;">
+                            <p style="font-size: 0.9375rem; color: var(--text-muted); font-style: italic; margin-bottom: 16px; line-height: 1.6;">
                                 "Our vision for BeatWave was bold — zero ads, high fidelity audio. We shipped v1 knowing it was rough. Then v2.1. Then kept going. That's how we build things."
                             </p>
-                            <cite style="font-size: 0.8125rem; color: var(--text-muted); font-style: normal; font-weight: 600;">— VortexApps Engineering</cite>
+                            <cite style="font-size: 0.8125rem; color: var(--text); font-style: normal; font-weight: 600;">— VortexApps Engineering</cite>
                         </blockquote>
                     </div>
                 </div>
@@ -110,6 +159,7 @@
         </section>
     </main>
 
+    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-inner">
