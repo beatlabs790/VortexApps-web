@@ -8,6 +8,7 @@ const DEFAULT_STATE = {
     downloads: "152+",
     announcement: "",
     maintenanceMode: false,
+    maintenanceReason: "VortexApps is currently undergoing scheduled updates.",
     projects: [
         {
             id: "beatwave",
@@ -121,6 +122,7 @@ function loadGlobalState() {
             if (!VORTEX_STATE.downloads) VORTEX_STATE.downloads = DEFAULT_STATE.downloads;
             if (VORTEX_STATE.announcement === undefined) VORTEX_STATE.announcement = DEFAULT_STATE.announcement;
             if (VORTEX_STATE.maintenanceMode === undefined) VORTEX_STATE.maintenanceMode = DEFAULT_STATE.maintenanceMode;
+            if (VORTEX_STATE.maintenanceReason === undefined) VORTEX_STATE.maintenanceReason = DEFAULT_STATE.maintenanceReason;
         } catch (e) {
             VORTEX_STATE = JSON.parse(JSON.stringify(DEFAULT_STATE));
         }
@@ -377,6 +379,12 @@ function renderAdminForms() {
 
     const annInput = document.getElementById('admin-announcement');
     if (annInput) annInput.value = VORTEX_STATE.announcement;
+
+    const mtToggle = document.getElementById('admin-maintenance-toggle');
+    if (mtToggle) mtToggle.checked = VORTEX_STATE.maintenanceMode || false;
+
+    const mtReason = document.getElementById('admin-maintenance-reason');
+    if (mtReason) mtReason.value = VORTEX_STATE.maintenanceReason || '';
 
     renderAdminProjectsEditor();
     renderAdminTeamList();
@@ -688,8 +696,8 @@ window.submitContactForm = submitContactForm;
 
 // --- MOBILE NAV ---
 function toggleNav() {
-    const nav = document.getElementById('main-nav');
-    if (nav) nav.classList.toggle('nav-open');
+    const links = document.getElementById('nav-links');
+    if (links) links.classList.toggle('open');
 }
 window.toggleNav = toggleNav;
 
@@ -700,29 +708,23 @@ function refreshIcons() {
 
 // --- COOKIE CONSENT ---
 function initCookieConsent() {
-    // Skip on admin page
     if (window.location.pathname.includes('admin')) return;
-    // Already accepted/declined
     if (localStorage.getItem('cookie_consent')) return;
 
-    // Inject banner HTML
     const banner = document.createElement('div');
     banner.id = 'cookie-consent';
     banner.innerHTML = `
-        <span class="cookie-icon">🍪</span>
         <div class="cookie-text">
             <h4>We use cookies</h4>
-            <p>We use essential cookies to keep the site running. See our <a href="privacy.html">Privacy Policy</a> for details.</p>
+            <p>We use essential cookies to keep the site running. See our <a href="privacy.html">Privacy Policy</a>.</p>
         </div>
         <div class="cookie-actions">
-            <button class="btn btn-secondary btn-sm" onclick="declineCookies()">Decline</button>
+            <button class="btn btn-ghost btn-sm" onclick="declineCookies()">Decline</button>
             <button class="btn btn-primary btn-sm" onclick="acceptCookies()">Accept</button>
         </div>
     `;
     document.body.appendChild(banner);
-
-    // Animate in after short delay
-    setTimeout(() => banner.classList.add('show'), 600);
+    setTimeout(() => banner.classList.add('show'), 700);
 }
 
 function acceptCookies() {
@@ -744,22 +746,34 @@ function dismissCookieBanner() {
     setTimeout(() => banner.remove(), 350);
 }
 
+// --- NAV SCROLL EFFECT ---
+function initNavScroll() {
+    const nav = document.getElementById('main-nav');
+    if (!nav) return;
+    const update = () => nav.classList.toggle('scrolled', window.scrollY > 10);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+}
+
 // --- LOADING SCREEN ---
 function initLoadingScreen() {
-    // Apply saved theme immediately before render to avoid flash
-    const saved = localStorage.getItem('vortex_theme') || 'light';
+    // Already in HTML for this design, just ensure theme is applied
+    const saved = localStorage.getItem('vortex_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
 
-    const loader = document.createElement('div');
-    loader.id = 'loading-screen';
-    loader.innerHTML = `
-        <div class="ls-logo">
-            <img src="assets/logo.png" alt="VortexApps">
-            VortexApps
-        </div>
-        <div class="ls-spinner"></div>
-    `;
-    document.body.prepend(loader);
+    // If no loading-screen in HTML, create it
+    if (!document.getElementById('loading-screen')) {
+        const loader = document.createElement('div');
+        loader.id = 'loading-screen';
+        loader.innerHTML = `
+            <div class="ls-logo">
+                <img src="assets/logo.png" alt="VortexApps">
+                VortexApps
+            </div>
+            <div class="ls-spinner"></div>
+        `;
+        document.body.prepend(loader);
+    }
 }
 
 function dismissLoadingScreen() {
@@ -854,6 +868,7 @@ function renderMaintenanceMode() {
     let overlay = document.getElementById('maintenance-overlay');
 
     if (isMaintenance) {
+        const reason = VORTEX_STATE.maintenanceReason || "VortexApps is currently undergoing scheduled updates.";
         if (!overlay) {
             overlay = document.createElement('div');
             overlay.id = 'maintenance-overlay';
@@ -861,16 +876,23 @@ function renderMaintenanceMode() {
                 <div class="maintenance-card">
                     <span class="maintenance-icon">🛠️</span>
                     <h1 class="maintenance-title">Under Maintenance</h1>
-                    <p class="maintenance-desc">
-                        VortexApps is currently undergoing scheduled updates. 
-                        We will be back online shortly. Thank you for your patience.
-                    </p>
+                    <p class="maintenance-desc">${reason}</p>
+                    <div style="margin-top: 24px; margin-bottom: 24px;">
+                        <a href="admin.html" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                            <i data-lucide="settings" style="width:14px;height:14px;"></i>
+                            Admin Console
+                        </a>
+                    </div>
                     <div style="font-size:0.75rem;color:var(--text-dim);font-family:var(--mono);">
                         VortexApps Systems &middot; Patna, IN
                     </div>
                 </div>
             `;
             document.body.appendChild(overlay);
+            refreshIcons();
+        } else {
+            const desc = overlay.querySelector('.maintenance-desc');
+            if (desc) desc.textContent = reason;
         }
     } else {
         if (overlay) overlay.remove();
@@ -884,16 +906,24 @@ function toggleMaintenanceMode(isEnabled) {
 }
 window.toggleMaintenanceMode = toggleMaintenanceMode;
 
+function updateMaintenanceReason(reason) {
+    VORTEX_STATE.maintenanceReason = reason.trim();
+    syncStateToDatabase();
+    showToast("Maintenance message updated.");
+}
+window.updateMaintenanceReason = updateMaintenanceReason;
+
 // --- BOOT ---
 // Apply theme before DOM paint to avoid flash
 (function() {
-    const saved = localStorage.getItem('vortex_theme') || 'light';
+    const saved = localStorage.getItem('vortex_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
 })();
 
 document.addEventListener('DOMContentLoaded', async () => {
     initLoadingScreen();
     initThemeToggle();
+    initNavScroll();
     refreshIcons();
     await initFirebase();
     initializeRealtimeSync();

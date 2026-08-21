@@ -1,34 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VortexApps — High-Performance Software Systems</title>
     <meta name="description" content="VortexApps builds high-performance software systems — from AI integrations to scalable web applications. Made in India.">
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="VortexApps — High-Performance Software Systems">
     <meta property="og:description" content="VortexApps builds high-performance software systems — from AI integrations to scalable web applications. Made in India.">
     <meta property="og:image" content="assets/og_image.jpg">
-
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="VortexApps — High-Performance Software Systems">
     <meta property="twitter:description" content="VortexApps builds high-performance software systems — from AI integrations to scalable web applications. Made in India.">
     <meta property="twitter:image" content="assets/og_image.jpg">
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="index.css">
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="config.js"></script>
     <script src="index.js" defer></script>
 </head>
 <body>
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="ls-logo">
+            <img src="assets/logo.png" alt="VortexApps">
+            VortexApps
+        </div>
+        <div class="ls-spinner"></div>
+    </div>
+
     <!-- ANNOUNCEMENT BAR -->
     <div id="announcement-bar"><span id="announcement-text"></span></div>
 
@@ -67,8 +70,8 @@
                     </span>
                 </div>
                 <h1 class="reveal reveal-2">
-                    We build software<br>
-                    that <span>actually works.</span>
+                    Software that<br>
+                    <span>actually ships.</span>
                 </h1>
                 <p class="hero-desc reveal reveal-3">
                     VortexApps is a two-person engineering team building AI-powered products and scalable web applications from Patna, India.
@@ -78,13 +81,12 @@
                     <a href="contact.html" class="btn btn-secondary btn-lg">Start a project</a>
                 </div>
 
-                <!-- STATS -->
-                <div class="stats-row reveal reveal-4" style="animation-delay: 0.35s;">
-                    <div class="stat-cell" style="border-right: 1px solid var(--border);">
+                <div class="stats-row reveal reveal-4" style="animation-delay:0.32s">
+                    <div class="stat-cell">
                         <div class="stat-num" id="downloads-counter">152+</div>
                         <div class="stat-label">Total installs</div>
                     </div>
-                    <div class="stat-cell" style="border-right: 1px solid var(--border);">
+                    <div class="stat-cell">
                         <div class="stat-num">3</div>
                         <div class="stat-label">Live projects</div>
                     </div>
@@ -109,19 +111,19 @@
                 <div class="home-projects-grid" id="dynamic-projects-grid">
                     <!-- Renders via JS -->
                 </div>
-                <div style="margin-top: 32px; text-align: center;">
-                    <a href="projects.html" class="btn btn-secondary">View all projects <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></a>
+                <div style="margin-top:24px;text-align:center;">
+                    <a href="projects.html" class="btn btn-secondary">View all projects <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></a>
                 </div>
             </div>
         </section>
 
         <hr>
 
-        <!-- CTA STRIP -->
+        <!-- CTA -->
         <section class="section-sm">
             <div class="container">
-                <div class="cta-strip" style="margin: 0;">
-                    <span class="label" style="margin-bottom: 16px; display: block;">Work with us</span>
+                <div class="cta-strip">
+                    <span class="label" style="display:block;margin-bottom:12px;">Work with us</span>
                     <h2>Got a project in mind?</h2>
                     <p>We're a small team that moves fast and cares about quality. Let's build something together.</p>
                     <a href="contact.html" class="btn btn-primary btn-lg">Start a conversation</a>
@@ -169,8 +171,6 @@
         </div>
     </footer>
 
-
-    <!-- TOAST -->
     <div id="toast"></div>
 </body>
 </html>

@@ -286,9 +286,14 @@
                             Maintenance Mode
                         </div>
                         <div class="admin-card-desc">Enable to prevent public access to the website.</div>
-                        <div class="admin-toggle" style="margin-top: 16px;">
+                        <div class="admin-toggle" style="margin-top: 16px; margin-bottom: 12px;">
                             <input type="checkbox" id="admin-maintenance-toggle" onchange="toggleMaintenanceMode(this.checked)">
                             <label class="admin-toggle-label" for="admin-maintenance-toggle">Enable Maintenance Mode</label>
+                        </div>
+                        <div class="admin-input-group" style="margin-bottom: 0;">
+                            <label class="admin-input-label">Maintenance Message / Reason</label>
+                            <input type="text" id="admin-maintenance-reason" class="admin-input" placeholder="e.g. Upgrading databases..."
+                                   onchange="updateMaintenanceReason(this.value)">
                         </div>
                     </div>
 
