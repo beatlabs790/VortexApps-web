@@ -319,31 +319,36 @@ function renderProjects() {
     VORTEX_STATE.projects.forEach(proj => {
         const isOnline = proj.status === 'online';
         const logoHTML = proj.logo && proj.logo.trim()
-            ? `<img src="${proj.logo}" alt="${proj.name}" class="project-card-logo">`
-            : `<div class="project-card-logo-placeholder"><i data-lucide="box" style="width:20px;height:20px;"></i></div>`;
+            ? `<img src="${proj.logo}" alt="${proj.name}" class="project-logo">`
+            : `<div class="project-logo-placeholder"><i data-lucide="box"></i></div>`;
 
         grid.innerHTML += `
-            <div class="project-card">
-                ${logoHTML}
+            <a class="project-card" href="${proj.link}" target="_blank" rel="noopener">
                 <div class="project-card-header">
-                    <h3>${proj.name}</h3>
-                    <span class="status-dot ${isOnline ? '' : 'offline'}">${isOnline ? 'Online' : 'Down'}</span>
-                </div>
-                <p>${proj.desc}</p>
-                <div class="project-card-footer">
-                    <div class="project-tags">
-                        <span class="tag">${proj.type}</span>
+                    ${logoHTML}
+                    <div class="project-card-meta">
+                        <div class="project-card-name">${proj.name}</div>
+                        <div class="project-card-type">${proj.type || 'App'}</div>
                     </div>
-                    <a href="${proj.link}" target="_blank" rel="noopener" class="project-link-btn">
-                        Open <i data-lucide="arrow-up-right" style="width:12px;height:12px;"></i>
-                    </a>
+                    <div class="project-status ${isOnline ? 'online' : ''}">
+                        <span class="status-dot"></span>
+                        ${isOnline ? 'Live' : 'Down'}
+                    </div>
                 </div>
-            </div>
+                <div class="project-card-desc">${proj.desc}</div>
+                <div class="project-card-footer">
+                    <span class="project-tech">${proj.tech || ''}</span>
+                    <div class="project-link-arrow">
+                        <i data-lucide="arrow-up-right" style="width:12px;height:12px;"></i>
+                    </div>
+                </div>
+            </a>
         `;
     });
 
     refreshIcons();
 }
+
 
 function renderTeam() {
     const grid = document.getElementById('dynamic-team-grid');
@@ -406,40 +411,34 @@ function renderAdminProjectsEditor() {
     grid.innerHTML = '';
     (VORTEX_STATE.projects || []).forEach(proj => {
         const isOnline = proj.status === 'online';
-        const logoHTML = proj.logo && proj.logo.trim()
-            ? `<img src="${proj.logo}" alt="${proj.name}" class="admin-project-logo">`
-            : `<div style="width:36px;height:36px;border-radius:6px;background:var(--bg-muted);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="box" style="width:16px;height:16px;color:var(--text-dim);"></i></div>`;
 
         grid.innerHTML += `
-            <div class="admin-project-card">
-                <div class="admin-project-card-header">
-                    ${logoHTML}
-                    <div>
-                        <div class="admin-project-name">${proj.name}</div>
+            <div class="admin-project-item">
+                <div class="admin-project-item-info">
+                    <div class="admin-project-item-name">${proj.name}</div>
+                    <div class="admin-project-item-meta">${proj.type || ''} ${proj.tech ? '· ' + proj.tech : ''}</div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
+                    <div class="admin-toggle">
+                        <input type="checkbox" id="db-proj-status-${proj.id}" ${isOnline ? 'checked' : ''}
+                            title="Mark as online">
+                        <label for="db-proj-status-${proj.id}" class="admin-toggle-label">Live</label>
                     </div>
-                    <div class="admin-project-status">
-                        <span class="status-dot ${isOnline ? '' : 'offline'}">${isOnline ? 'Online' : 'Down'}</span>
-                    </div>
+                    <button onclick="updateIndividualProject('${proj.id}')" class="btn btn-secondary btn-sm">Save</button>
+                    <button onclick="removeProject('${proj.id}')" class="btn btn-danger btn-sm">Remove</button>
                 </div>
-                <div class="admin-input-group">
-                    <label class="admin-input-label">Project name</label>
-                    <input type="text" id="db-proj-name-${proj.id}" class="admin-input" value="${proj.name}">
-                </div>
-                <div class="admin-input-group">
-                    <label class="admin-input-label">Download / Site link</label>
-                    <input type="text" id="db-proj-link-${proj.id}" class="admin-input" value="${proj.link}">
-                </div>
-                <div class="admin-toggle">
-                    <input type="checkbox" id="db-proj-status-${proj.id}" ${isOnline ? 'checked' : ''}>
-                    <label class="admin-toggle-label" for="db-proj-status-${proj.id}">Mark as online</label>
-                </div>
-                <button onclick="updateIndividualProject('${proj.id}')" class="btn btn-primary btn-sm" style="width:100%;">Save changes</button>
             </div>
         `;
     });
 
+    if (!VORTEX_STATE.projects || VORTEX_STATE.projects.length === 0) {
+        grid.innerHTML = `<p style="font-size:0.875rem;color:var(--text-muted);padding:4px 0;">No projects yet.</p>`;
+    }
+
     refreshIcons();
 }
+
+
 
 function renderAdminTeamList() {
     const list = document.getElementById('admin-team-list');
@@ -519,6 +518,15 @@ function updateIndividualProject(projectId) {
     }
 }
 window.updateIndividualProject = updateIndividualProject;
+
+function removeProject(projectId) {
+    const proj = VORTEX_STATE.projects.find(p => p.id === projectId);
+    VORTEX_STATE.projects = VORTEX_STATE.projects.filter(p => p.id !== projectId);
+    syncStateToDatabase();
+    showToast(proj ? `"${proj.name}" removed.` : 'Project removed.');
+}
+window.removeProject = removeProject;
+
 
 function updateTeamMemberInline(memberId) {
     const name = document.getElementById(`db-team-name-${memberId}`)?.value.trim();
@@ -650,12 +658,12 @@ function updateSyncIndicator(isConnected) {
 
     dots.forEach(dot => {
         if (dot) {
-            dot.classList.toggle('offline', !isConnected);
+            dot.classList.toggle('synced', isConnected);
         }
     });
 
     if (label) label.textContent = isConnected ? 'Firebase synced' : 'Local mode';
-    if (statusText) statusText.textContent = isConnected ? 'Firebase connected' : 'Not connected — check Firebase rules';
+    if (statusText) statusText.textContent = isConnected ? 'Firebase connected' : 'Not connected — local db active';
 }
 
 // --- ADMIN LOG ---
