@@ -1,92 +1,21 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact — VortexApps</title>
-    <meta name="description" content="Get in touch with VortexApps. We respond within 24 hours.">
+    <meta name="description" content="Get in touch with VortexApps to start a project or ask a question.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vortexapps.dev/contact.html">
     <meta property="og:title" content="Contact — VortexApps">
-    <meta property="og:description" content="Get in touch with VortexApps. We respond within 24 hours.">
+    <meta property="og:description" content="Get in touch with VortexApps to start a project or ask a question.">
     <meta property="og:image" content="assets/og_image.jpg">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Contact — VortexApps">
-    <meta property="twitter:description" content="Get in touch with VortexApps. We respond within 24 hours.">
     <meta property="twitter:image" content="assets/og_image.jpg">
+    <link rel="canonical" href="https://vortexapps.dev/contact.html">
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="index.css">
-    <style>
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 60px;
-        }
-        @media (max-width: 768px) {
-            .contact-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-        }
-        .contact-detail {
-            margin-bottom: 24px;
-        }
-        .contact-detail a {
-            font-size: 0.9375rem;
-            font-weight: 500;
-            color: var(--text);
-            text-decoration: underline;
-        }
-        .contact-detail span {
-            font-size: 0.9375rem;
-            color: var(--text-muted);
-        }
-        .support-box {
-            padding: 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-        }
-        .upi-id {
-            font-family: var(--mono);
-            font-size: 0.8125rem;
-            color: var(--text);
-            background: var(--bg);
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border);
-            display: inline-block;
-            margin-top: 8px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 16px;
-        }
-        .form-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-muted);
-        }
-        .form-input, .form-textarea {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            color: var(--text);
-            font-family: var(--font);
-            font-size: 0.875rem;
-            padding: 10px 12px;
-            outline: none;
-            transition: var(--transition);
-        }
-        .form-textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-        .form-input:focus, .form-textarea:focus {
-            border-color: var(--border-bright);
-        }
-    </style>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -95,25 +24,14 @@
     <script src="index.js" defer></script>
 </head>
 <body>
-    <!-- LOADING SCREEN -->
     <div id="loading-screen">
-        <div class="ls-logo">
-            <img src="assets/logo.png" alt="VortexApps">
-            VortexApps
-        </div>
+        <div class="ls-logo"><img src="assets/logo.png" alt="VortexApps"> VortexApps</div>
         <div class="ls-spinner"></div>
     </div>
-
-    <!-- ANNOUNCEMENT BAR -->
     <div id="announcement-bar"><span id="announcement-text"></span></div>
-
-    <!-- NAV -->
     <nav id="main-nav">
         <div class="nav-inner">
-            <a href="index.html" class="nav-logo">
-                <img src="assets/logo.png" alt="VortexApps">
-                VortexApps
-            </a>
+            <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="VortexApps"> VortexApps</a>
             <div class="nav-links" id="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About</a>
@@ -122,135 +40,91 @@
                 <a href="contact.html" class="nav-link active">Contact</a>
             </div>
             <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" aria-label="Toggle theme"><i data-lucide="moon" id="theme-icon"></i></button>
                 <a href="contact.html" class="btn btn-primary btn-sm">Get in touch</a>
-                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
+                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
             </div>
         </div>
     </nav>
-
-    <!-- MAIN -->
     <main>
-        <section class="section-sm">
+        <section class="hero" style="padding-bottom:64px;">
             <div class="container">
-                <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">Contact</span>
-                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3.5rem); margin-bottom: 16px; font-weight: 800; letter-spacing: -0.04em;">
-                    Let's build something.
-                </h1>
-                <p class="reveal reveal-3" style="font-size: 1rem; max-width: 440px; color: var(--text-muted); line-height: 1.7;">
-                    We respond to every message. Tell us what you're working on.
-                </p>
+                <span class="label reveal reveal-1" style="display:block;margin-bottom:14px;">Contact</span>
+                <h1 class="reveal reveal-2" style="max-width:600px;">Let's <span class="accent-word">build</span> something.</h1>
+                <p class="hero-desc reveal reveal-3">We respond within 24 hours. For quick questions, Discord is fastest.</p>
             </div>
         </section>
-
         <hr>
-
         <section class="section">
             <div class="container">
                 <div class="contact-grid">
-                    <!-- LEFT INFO -->
-                    <div class="contact-info reveal reveal-1">
+                    <!-- Left: Contact info -->
+                    <div>
                         <div class="contact-detail">
-                            <div class="label" style="margin-bottom: 6px;">Email</div>
+                            <span class="label">Email</span>
                             <a href="mailto:beatwave790@gmail.com">beatwave790@gmail.com</a>
                         </div>
                         <div class="contact-detail">
-                            <div class="label" style="margin-bottom: 6px;">Discord</div>
+                            <span class="label">Discord</span>
                             <a href="https://discord.gg/spbuDTePSR" target="_blank" rel="noopener">discord.gg/spbuDTePSR</a>
                         </div>
                         <div class="contact-detail">
-                            <div class="label" style="margin-bottom: 6px;">Instagram</div>
+                            <span class="label">Instagram</span>
                             <a href="https://instagram.com/akshansh_6969" target="_blank" rel="noopener">@akshansh_6969</a>
                         </div>
                         <div class="contact-detail">
-                            <div class="label" style="margin-bottom: 6px;">Location</div>
-                            <span>Patna, India &middot; Remote-first</span>
+                            <span class="label">Location</span>
+                            <span>Patna, Bihar, India</span>
                         </div>
-                        <div class="contact-detail">
-                            <div class="label" style="margin-bottom: 6px;">Response time</div>
-                            <span>Within 24 hours</span>
-                        </div>
-
-                        <!-- SUPPORT -->
-                        <div class="support-box" style="margin-top: 40px;">
-                            <span class="label" style="display: block; margin-bottom: 10px;">Support our work</span>
-                            <p style="font-size: 0.8125rem; margin-bottom: 14px; color: var(--text-muted); line-height: 1.5;">
-                                If our apps have helped you, consider supporting us via UPI. Completely optional.
-                            </p>
+                        <div class="support-box" style="margin-top:32px;">
+                            <div style="font-size:0.8125rem;font-weight:600;color:var(--text);margin-bottom:8px;">Support the team</div>
+                            <div style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:10px);">Buy us a chai ☕ via UPI:</div>
                             <div class="upi-id">akshanshsinha67@axl</div>
-                            <div style="margin-top: 12px;">
-                                <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">
-                                    Open support page ↗
-                                </a>
+                            <div style="margin-top:12px;">
+                                <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Support page →</a>
                             </div>
                         </div>
                     </div>
-
-                    <!-- RIGHT FORM -->
-                    <div class="contact-form reveal reveal-2">
-                        <form id="contact-form" onsubmit="submitContactForm(event)">
+                    <!-- Right: Contact form -->
+                    <div>
+                        <form onsubmit="submitContactForm(event)">
                             <div class="form-group">
-                                <label class="form-label" for="contact-name">Your name</label>
-                                <input type="text" id="contact-name" class="form-input" placeholder="Aarav Sharma" required>
+                                <label class="form-label" for="cf-name">Your name</label>
+                                <input class="form-input" id="cf-name" type="text" placeholder="Ravi Kumar" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label" for="contact-email">Email address</label>
-                                <input type="email" id="contact-email" class="form-input" placeholder="you@example.com" required>
+                                <label class="form-label" for="cf-email">Email address</label>
+                                <input class="form-input" id="cf-email" type="email" placeholder="ravi@example.com" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label" for="contact-subject">Subject</label>
-                                <input type="text" id="contact-subject" class="form-input" placeholder="Project inquiry / Question">
+                                <label class="form-label" for="cf-subject">What's this about?</label>
+                                <input class="form-input" id="cf-subject" type="text" placeholder="New project / Question / Collab">
                             </div>
                             <div class="form-group">
-                                <label class="form-label" for="contact-message">Message</label>
-                                <textarea id="contact-message" class="form-textarea" placeholder="Tell us about your project, what you need, and your timeline..." required></textarea>
+                                <label class="form-label" for="cf-msg">Message</label>
+                                <textarea class="form-textarea" id="cf-msg" placeholder="Tell us what you're building..." required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 8px;">
-                                Send message <i data-lucide="send" style="width:14px;height:14px;"></i>
-                            </button>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Send message →</button>
                         </form>
                     </div>
                 </div>
             </div>
         </section>
     </main>
-
-    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-inner">
                 <div>
-                    <div class="footer-brand">
-                        <img src="assets/logo.png" alt="VortexApps">
-                        VortexApps
-                    </div>
-                    <div class="footer-copy">© 2024 VortexApps. Made in India.</div>
+                    <div class="footer-brand"><img src="assets/logo.png" alt="VortexApps"> VortexApps</div>
+                    <div class="footer-copy">© 2025 VortexApps. Made in India.</div>
                 </div>
-                <div class="footer-links-group">
-                    <h4>Navigation</h4>
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="services.html">Services</a>
-                    <a href="projects.html">Projects</a>
-                    <a href="contact.html">Contact</a>
-                </div>
-                <div class="footer-links-group">
-                    <h4>Connect</h4>
-                    <a href="mailto:beatwave790@gmail.com">beatwave790@gmail.com</a>
-                    <a href="https://discord.gg/spbuDTePSR" target="_blank" rel="noopener">Discord</a>
-                    <a href="https://instagram.com/akshansh_6969" target="_blank" rel="noopener">Instagram</a>
-                    <a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener">Support us</a>
-                </div>
-                <div class="footer-links-group">
-                    <h4>Legal</h4>
-                    <a href="privacy.html">Privacy Policy</a>
-                    <a href="terms.html">Terms of Service</a>
-                </div>
+                <div class="footer-links-group"><h4>Navigation</h4><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a></div>
+                <div class="footer-links-group"><h4>Connect</h4><a href="mailto:beatwave790@gmail.com">beatwave790@gmail.com</a><a href="https://discord.gg/spbuDTePSR" target="_blank" rel="noopener">Discord</a><a href="https://instagram.com/akshansh_6969" target="_blank" rel="noopener">Instagram</a><a href="https://support-akshansh.vercel.app" target="_blank" rel="noopener">Support us</a></div>
+                <div class="footer-links-group"><h4>Legal</h4><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+                <div class="footer-links-group"><h4>Admin</h4><a href="admin.html">Dashboard</a></div>
             </div>
         </div>
     </footer>
-
     <div id="toast"></div>
 </body>
 </html>

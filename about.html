@@ -1,57 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About — VortexApps</title>
-    <meta name="description" content="Meet the team behind VortexApps — a two-person engineering team building high-performance software from India.">
+    <meta name="description" content="Learn about VortexApps — a two-person engineering studio building AI-powered products from Patna, India.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vortexapps.dev/about.html">
     <meta property="og:title" content="About — VortexApps">
-    <meta property="og:description" content="Meet the team behind VortexApps — a two-person engineering team building high-performance software from India.">
+    <meta property="og:description" content="Learn about VortexApps — a two-person engineering studio building AI-powered products from Patna, India.">
     <meta property="og:image" content="assets/og_image.jpg">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="About — VortexApps">
-    <meta property="twitter:description" content="Meet the team behind VortexApps — a two-person engineering team building high-performance software from India.">
+    <meta property="twitter:description" content="Learn about VortexApps — a two-person engineering studio building AI-powered products from Patna, India.">
     <meta property="twitter:image" content="assets/og_image.jpg">
+    <link rel="canonical" href="https://vortexapps.dev/about.html">
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="index.css">
-    <style>
-        .about-values-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-        .value-card {
-            background: var(--bg-card);
-            padding: 28px;
-            transition: background 0.18s;
-        }
-        .value-card:hover { background: var(--bg-card-hover); }
-        .value-num {
-            font-size: 0.6875rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            color: var(--text-dim);
-            font-family: var(--mono);
-            margin-bottom: 12px;
-        }
-        .value-card h3 {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 6px;
-            letter-spacing: -0.01em;
-        }
-        .value-card p {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-    </style>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -60,25 +25,16 @@
     <script src="index.js" defer></script>
 </head>
 <body>
-    <!-- LOADING SCREEN -->
     <div id="loading-screen">
-        <div class="ls-logo">
-            <img src="assets/logo.png" alt="VortexApps">
-            VortexApps
-        </div>
+        <div class="ls-logo"><img src="assets/logo.png" alt="VortexApps"> VortexApps</div>
         <div class="ls-spinner"></div>
     </div>
 
-    <!-- ANNOUNCEMENT BAR -->
     <div id="announcement-bar"><span id="announcement-text"></span></div>
 
-    <!-- NAV -->
     <nav id="main-nav">
         <div class="nav-inner">
-            <a href="index.html" class="nav-logo">
-                <img src="assets/logo.png" alt="VortexApps">
-                VortexApps
-            </a>
+            <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="VortexApps"> VortexApps</a>
             <div class="nav-links" id="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link active">About</a>
@@ -87,26 +43,37 @@
                 <a href="contact.html" class="nav-link">Contact</a>
             </div>
             <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" aria-label="Toggle theme"><i data-lucide="moon" id="theme-icon"></i></button>
                 <a href="contact.html" class="btn btn-primary btn-sm">Get in touch</a>
-                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
+                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
             </div>
         </div>
     </nav>
 
-    <!-- MAIN -->
     <main>
-        <section class="section-sm">
+        <!-- PAGE HEADER -->
+        <section class="hero" style="padding-bottom:64px;">
             <div class="container">
-                <div class="about-hero">
-                    <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">About us</span>
-                    <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3.5rem); margin-bottom: 20px; font-weight: 800; letter-spacing: -0.04em;">
-                        A small team.<br>Serious about software.
-                    </h1>
-                    <p class="reveal reveal-3" style="font-size: 1rem; max-width: 520px; color: var(--text-muted); line-height: 1.7;">
-                        VortexApps is Aarav and Akshansh — two engineers based in Patna, India. We build products we'd want to use ourselves: fast, clean, and reliable.
-                    </p>
+                <span class="label reveal reveal-1" style="display:block;margin-bottom:14px;">About</span>
+                <h1 class="reveal reveal-2" style="max-width:680px;">Two engineers, one mission.</h1>
+                <p class="hero-desc reveal reveal-3">
+                    VortexApps is a small, focused studio founded by Akshansh Sinha and Aarav Sharma. We build software that solves real problems, ships fast, and scales further.
+                </p>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- TEAM -->
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="label">Team</span>
+                    <h2>The people behind the products.</h2>
+                    <p>A tight-knit team with deep expertise across engineering, design, and product.</p>
+                </div>
+                <div class="team-grid" id="dynamic-team-grid">
+                    <!-- Renders via JS -->
                 </div>
             </div>
         </section>
@@ -117,41 +84,30 @@
         <section class="section">
             <div class="container">
                 <div class="section-header">
-                    <span class="label">What we believe</span>
+                    <span class="label">Values</span>
                     <h2>How we work.</h2>
                 </div>
                 <div class="about-values-grid">
-                    <div class="value-card reveal reveal-2">
+                    <div class="value-card reveal reveal-1">
                         <div class="value-num">01</div>
                         <h3>Precision over shortcuts</h3>
-                        <p>We build things right the first time. Clean architecture, clear code, zero debt.</p>
+                        <p>We build things right the first time. Clean architecture, clear code, zero tech debt shipped.</p>
+                    </div>
+                    <div class="value-card reveal reveal-2">
+                        <div class="value-num">02</div>
+                        <h3>Simplicity is the feature</h3>
+                        <p>The best interface is one users never have to think about. We obsess over reducing friction.</p>
                     </div>
                     <div class="value-card reveal reveal-3">
-                        <div class="value-num">02</div>
-                        <h3>Simplicity is a feature</h3>
-                        <p>The best interface is the one users don't have to think about. We obsess over clarity.</p>
+                        <div class="value-num">03</div>
+                        <h3>Built to scale</h3>
+                        <p>Every system is designed for tomorrow. We architect for growth, not for the demo.</p>
                     </div>
                     <div class="value-card reveal reveal-4">
-                        <div class="value-num">03</div>
-                        <h3>Built to last</h3>
-                        <p>Every system we build is designed to scale. We write for tomorrow, not just today.</p>
+                        <div class="value-num">04</div>
+                        <h3>Ship it, then improve</h3>
+                        <p>We believe in getting real products in front of real users and iterating fast from there.</p>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <hr>
-
-        <!-- TEAM -->
-        <section class="section">
-            <div class="container">
-                <div class="section-header">
-                    <span class="label">The team</span>
-                    <h2>Who we are.</h2>
-                    <p>Two builders. One mission.</p>
-                </div>
-                <div class="team-grid" id="dynamic-team-grid">
-                    <!-- Renders via JS -->
                 </div>
             </div>
         </section>
@@ -162,32 +118,25 @@
         <section class="section-sm">
             <div class="container">
                 <div class="cta-strip">
-                    <h2>Want to work together?</h2>
-                    <p>We take on a limited number of projects. Reach out early.</p>
-                    <a href="contact.html" class="btn btn-primary btn-lg">Contact us</a>
+                    <span class="label" style="display:block;margin-bottom:14px;">Work with us</span>
+                    <h2>Ready to build something?</h2>
+                    <p>We're always open to interesting projects. Drop us a line and let's talk.</p>
+                    <a href="contact.html" class="btn btn-primary btn-lg">Get in touch</a>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-inner">
                 <div>
-                    <div class="footer-brand">
-                        <img src="assets/logo.png" alt="VortexApps">
-                        VortexApps
-                    </div>
-                    <div class="footer-copy">© 2024 VortexApps. Made in India.</div>
+                    <div class="footer-brand"><img src="assets/logo.png" alt="VortexApps"> VortexApps</div>
+                    <div class="footer-copy">© 2025 VortexApps. Made in India.</div>
                 </div>
                 <div class="footer-links-group">
                     <h4>Navigation</h4>
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="services.html">Services</a>
-                    <a href="projects.html">Projects</a>
-                    <a href="contact.html">Contact</a>
+                    <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
                 </div>
                 <div class="footer-links-group">
                     <h4>Connect</h4>
@@ -198,8 +147,11 @@
                 </div>
                 <div class="footer-links-group">
                     <h4>Legal</h4>
-                    <a href="privacy.html">Privacy Policy</a>
-                    <a href="terms.html">Terms of Service</a>
+                    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Admin</h4>
+                    <a href="admin.html">Dashboard</a>
                 </div>
             </div>
         </div>

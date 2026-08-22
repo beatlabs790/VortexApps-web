@@ -396,12 +396,17 @@ function renderAdminForms() {
 }
 
 function renderAdminOverviewStats() {
-    const ov = document.getElementById('ov-downloads');
-    if (ov) ov.textContent = VORTEX_STATE.downloads;
-    const op = document.getElementById('ov-projects');
-    if (op) op.textContent = VORTEX_STATE.projects ? VORTEX_STATE.projects.length : 0;
-    const ot = document.getElementById('ov-team');
-    if (ot) ot.textContent = VORTEX_STATE.team ? VORTEX_STATE.team.length : 0;
+    // Support both old and new element IDs
+    const dlEls = ['ov-downloads', 'admin-downloads-display'];
+    dlEls.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = VORTEX_STATE.downloads; });
+
+    const pCount = VORTEX_STATE.projects ? VORTEX_STATE.projects.length : 0;
+    const projEls = ['ov-projects', 'admin-projects-count'];
+    projEls.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = pCount; });
+
+    const tCount = VORTEX_STATE.team ? VORTEX_STATE.team.length : 0;
+    const teamEls = ['ov-team', 'admin-team-count'];
+    teamEls.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = tCount; });
 }
 
 function renderAdminProjectsEditor() {
@@ -500,6 +505,13 @@ function updateFirebaseAnnouncement() {
     showToast(VORTEX_STATE.announcement ? "Announcement set." : "Announcement cleared.");
 }
 window.updateFirebaseAnnouncement = updateFirebaseAnnouncement;
+
+// Friendly aliases used in admin.html
+function saveAnnouncement() { updateFirebaseAnnouncement(); }
+window.saveAnnouncement = saveAnnouncement;
+
+function saveDownloads() { updateFirebaseStats(); }
+window.saveDownloads = saveDownloads;
 
 function updateIndividualProject(projectId) {
     const name = document.getElementById(`db-proj-name-${projectId}`)?.value.trim();
@@ -756,20 +768,14 @@ function dismissCookieBanner() {
 
 // --- NAV SCROLL EFFECT ---
 function initNavScroll() {
-    const nav = document.getElementById('main-nav');
-    if (!nav) return;
-    const update = () => nav.classList.toggle('scrolled', window.scrollY > 10);
-    update();
-    window.addEventListener('scroll', update, { passive: true });
+    // Floating pill nav — no scroll class needed; always styled
 }
 
 // --- LOADING SCREEN ---
 function initLoadingScreen() {
-    // Already in HTML for this design, just ensure theme is applied
     const saved = localStorage.getItem('vortex_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
 
-    // If no loading-screen in HTML, create it
     if (!document.getElementById('loading-screen')) {
         const loader = document.createElement('div');
         loader.id = 'loading-screen';
@@ -788,41 +794,30 @@ function dismissLoadingScreen() {
     const loader = document.getElementById('loading-screen');
     if (!loader) return;
     loader.classList.add('fade-out');
-    setTimeout(() => loader.remove(), 450);
+    setTimeout(() => loader.remove(), 500);
 }
 
 // --- DARK / LIGHT THEME ---
 function initThemeToggle() {
-    // Inject toggle button into nav's nav-right div
-    const navRight = document.querySelector('.nav-right');
-    if (!navRight) return;
+    // Toggle button is embedded in HTML. Just sync icon state on load.
+    updateThemeIcon();
+}
 
-    const btn = document.createElement('button');
-    btn.className = 'theme-toggle';
-    btn.setAttribute('aria-label', 'Toggle theme');
-    btn.setAttribute('title', 'Toggle dark/light mode');
-    btn.onclick = toggleTheme;
-    btn.innerHTML = `
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/>
-            <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
-            <line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>
-            <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
-        </svg>
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-    `;
-
-    // Insert before "Get in touch" button
-    navRight.insertBefore(btn, navRight.firstChild);
+function updateThemeIcon() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const icon = document.getElementById('theme-icon');
+    if (icon) {
+        icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
 }
 
 function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('vortex_theme', next);
+    updateThemeIcon();
 }
 window.toggleTheme = toggleTheme;
 
@@ -941,20 +936,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Dismiss loading screen after exactly 1 second
     setTimeout(dismissLoadingScreen, 1000);
 
-    // Animate elements with class "reveal" that are in viewport
+    // Reveal animations — add 'visible' class when in viewport
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
+                entry.target.classList.add('visible');
                 observer.unobserve(entry.target);
             }
         });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.reveal').forEach(el => {
-        el.style.animationPlayState = 'paused';
-        observer.observe(el);
-    });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 });
 
 

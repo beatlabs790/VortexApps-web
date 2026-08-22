@@ -3,55 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard — VortexApps</title>
+    <title>Admin — VortexApps</title>
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="index.css">
-    <style>
-        /* Admin-specific overrides */
-        body { overflow: hidden; }
-        .admin-root { height: 100vh; overflow: hidden; }
-        .admin-main { height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
-        .admin-tab-content { flex: 1; padding: 24px 28px; }
-
-        /* Overview stats using admin-overview-grid classes */
-        .admin-overview-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .admin-stat-card { background: var(--bg-card); padding: 20px; }
-        .admin-stat-label {
-            font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.07em;
-            text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
-        }
-        .admin-stat-num {
-            font-size: 1.75rem; font-weight: 700; letter-spacing: -0.04em;
-            color: var(--text); line-height: 1; margin-bottom: 2px;
-        }
-
-        /* Admin project items */
-        .admin-projects-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-        .admin-project-item {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 14px 16px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .admin-project-item-info { flex: 1; min-width: 0; }
-        .admin-project-item-name { font-size: 0.875rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-        .admin-project-item-meta { font-size: 0.75rem; color: var(--text-dim); }
-
-        /* Admin sidebar bottom */
-        .admin-sidebar-bottom {
-            padding: 8px;
-            border-top: 1px solid var(--border);
-            margin-top: auto;
-        }
-    </style>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -60,143 +14,139 @@
     <script src="index.js" defer></script>
 </head>
 <body>
+    <div id="loading-screen">
+        <div class="ls-logo"><img src="assets/logo.png" alt="VortexApps"> VortexApps</div>
+        <div class="ls-spinner"></div>
+    </div>
 
     <!-- AUTH PANEL -->
-    <div id="admin-auth-panel">
+    <div id="admin-auth-panel" class="admin-auth-wrap active">
         <div class="admin-auth-card">
             <div class="admin-auth-logo">
                 <img src="assets/logo.png" alt="VortexApps">
                 VortexApps
             </div>
-            <div class="admin-auth-title">Admin Dashboard</div>
-            <div class="admin-auth-desc">Enter your password to access the control panel.</div>
-            <div class="admin-input-group">
-                <label class="admin-input-label" for="admin-password">Password</label>
-                <input type="password" id="admin-password" class="admin-input" placeholder="••••••••"
+            <h1 class="admin-auth-title">Admin Console</h1>
+            <p class="admin-auth-desc">Sign in to manage announcements, projects, and site settings.</p>
+            <div class="form-group">
+                <label class="form-label" for="admin-password">Password</label>
+                <input class="form-input" id="admin-password" type="password" placeholder="••••••••"
                     onkeydown="if(event.key==='Enter') verifyAdmin()">
             </div>
-            <button onclick="verifyAdmin()" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:16px;">
-                Sign in <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
+            <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="verifyAdmin()">
+                Sign in
+                <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
             </button>
-            <div style="text-align:center;">
-                <a href="index.html" class="btn btn-ghost btn-sm">← Back to site</a>
-            </div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD PANEL -->
     <div id="admin-dashboard-panel">
         <div class="admin-root">
-
             <!-- SIDEBAR -->
             <aside class="admin-sidebar">
                 <div class="admin-sidebar-logo">
                     <img src="assets/logo.png" alt="VortexApps">
                     VortexApps
                 </div>
+
                 <nav class="admin-nav">
-                    <div class="admin-nav-group-label">Workspace</div>
+                    <span class="admin-nav-group-label">Overview</span>
                     <button class="admin-nav-item active" id="tab-btn-overview" onclick="switchAdminTab('overview')">
-                        <i data-lucide="layout-dashboard"></i>
-                        Overview
+                        <i data-lucide="layout-dashboard"></i> Dashboard
+                    </button>
+
+                    <span class="admin-nav-group-label">Content</span>
+                    <button class="admin-nav-item" id="tab-btn-announcement" onclick="switchAdminTab('announcement')">
+                        <i data-lucide="megaphone"></i> Announcement
                     </button>
                     <button class="admin-nav-item" id="tab-btn-projects" onclick="switchAdminTab('projects')">
-                        <i data-lucide="box"></i>
-                        Projects
+                        <i data-lucide="folder-open"></i> Projects
                     </button>
                     <button class="admin-nav-item" id="tab-btn-team" onclick="switchAdminTab('team')">
-                        <i data-lucide="users"></i>
-                        Team
+                        <i data-lucide="users"></i> Team
                     </button>
-                    <div class="admin-nav-group-label">System</div>
+
+                    <span class="admin-nav-group-label">Site</span>
                     <button class="admin-nav-item" id="tab-btn-settings" onclick="switchAdminTab('settings')">
-                        <i data-lucide="settings"></i>
-                        Settings
+                        <i data-lucide="settings"></i> Settings
+                    </button>
+
+                    <span class="admin-nav-group-label">Session</span>
+                    <button class="admin-nav-item" onclick="lockAdminPanel()">
+                        <i data-lucide="log-out"></i> Sign out
                     </button>
                 </nav>
+
                 <div class="admin-sidebar-bottom">
-                    <div class="admin-sync-indicator" style="padding:8px 10px;gap:6px;">
-                        <span class="admin-sync-dot" id="admin-sync-dot"></span>
-                        <span id="admin-sync-label" style="font-size:0.75rem;color:var(--text-muted);">Connecting...</span>
+                    <div class="admin-nav-item" style="cursor:default;gap:10px;">
+                        <span class="admin-sync-indicator">
+                            <span class="admin-sync-dot" id="sidebar-sync-dot"></span>
+                        </span>
+                        <span style="font-size:0.75rem;color:var(--text-dim);" id="admin-sync-label">Connecting…</span>
                     </div>
-                    <button onclick="lockAdminPanel()" class="admin-nav-item" style="color:var(--red);">
-                        <i data-lucide="log-out"></i>
-                        Sign out
-                    </button>
                 </div>
             </aside>
 
-            <!-- MAIN -->
-            <main class="admin-main">
-
+            <!-- MAIN CONTENT -->
+            <div class="admin-main">
                 <!-- OVERVIEW TAB -->
                 <div class="admin-tab active" id="admin-tab-overview">
                     <div class="admin-topbar">
                         <div>
-                            <h1>Overview</h1>
-                            <p>Manage your site's content and sync status.</p>
+                            <h1>Dashboard</h1>
+                            <p>Site status and quick overview</p>
                         </div>
-                        <a href="index.html" target="_blank" class="btn btn-secondary btn-sm">
-                            <i data-lucide="external-link" style="width:12px;height:12px;"></i>
-                            View site
-                        </a>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <a href="index.html" target="_blank" class="btn btn-secondary btn-sm">
+                                <i data-lucide="external-link" style="width:13px;height:13px;"></i>
+                                View site
+                            </a>
+                        </div>
                     </div>
                     <div class="admin-tab-content">
-                        <!-- STATS -->
                         <div class="admin-overview-grid">
                             <div class="admin-stat-card">
-                                <div class="admin-stat-label">Total Installs</div>
-                                <div class="admin-stat-num" id="ov-downloads">—</div>
+                                <div class="admin-stat-label">Downloads</div>
+                                <div class="admin-stat-num" id="admin-downloads-display">—</div>
                             </div>
                             <div class="admin-stat-card">
-                                <div class="admin-stat-label">Live Projects</div>
-                                <div class="admin-stat-num" id="ov-projects">—</div>
+                                <div class="admin-stat-label">Projects</div>
+                                <div class="admin-stat-num" id="admin-projects-count">—</div>
                             </div>
                             <div class="admin-stat-card">
                                 <div class="admin-stat-label">Team Members</div>
-                                <div class="admin-stat-num" id="ov-team">—</div>
+                                <div class="admin-stat-num" id="admin-team-count">—</div>
                             </div>
                         </div>
 
-                        <div class="admin-grid-2">
-                            <!-- DOWNLOADS -->
-                            <div class="admin-card">
-                                <div class="admin-card-title">
-                                    <i data-lucide="download"></i>
-                                    Install Count
-                                </div>
-                                <div class="admin-card-desc">Update the total install count displayed on the homepage.</div>
-                                <div class="admin-input-group">
-                                    <label class="admin-input-label">Install count</label>
-                                    <input type="text" id="admin-downloads" class="admin-input" placeholder="e.g. 152+">
-                                </div>
-                                <button onclick="updateFirebaseStats()" class="btn btn-primary btn-sm">Save</button>
-                            </div>
-
-                            <!-- ANNOUNCEMENT -->
-                            <div class="admin-card">
-                                <div class="admin-card-title">
-                                    <i data-lucide="megaphone"></i>
-                                    Announcement Banner
-                                </div>
-                                <div class="admin-card-desc">Show a site-wide banner. Leave empty to hide it.</div>
-                                <div class="admin-input-group">
-                                    <label class="admin-input-label">Message</label>
-                                    <input type="text" id="admin-announcement" class="admin-input" placeholder="Enter announcement text...">
-                                </div>
-                                <button onclick="updateFirebaseAnnouncement()" class="btn btn-primary btn-sm">Save</button>
-                            </div>
-                        </div>
-
-                        <!-- LOG -->
                         <div class="admin-card">
-                            <div class="admin-card-title" style="margin-bottom:10px;">
-                                <i data-lucide="terminal"></i>
+                            <div class="admin-card-title">
+                                <i data-lucide="activity"></i>
                                 Activity Log
                             </div>
-                            <div id="admin-log">
-                                <span style="color:var(--text-dim)">[--:--:--] Dashboard initialized.</span>
+                            <div id="admin-log"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANNOUNCEMENT TAB -->
+                <div class="admin-tab" id="admin-tab-announcement">
+                    <div class="admin-topbar">
+                        <div>
+                            <h1>Announcement Bar</h1>
+                            <p>Set a site-wide message shown to all visitors</p>
+                        </div>
+                    </div>
+                    <div class="admin-tab-content">
+                        <div class="admin-card">
+                            <div class="admin-card-title"><i data-lucide="megaphone"></i> Announcement</div>
+                            <div class="admin-card-desc">Shown as a banner at the top of every page. Leave empty to hide.</div>
+                            <div class="admin-input-group">
+                                <label class="admin-input-label" for="admin-announcement">Message text</label>
+                                <input class="admin-input" id="admin-announcement" type="text" placeholder="e.g. WaveMirror v3 is live! Download now →">
                             </div>
+                            <button class="btn btn-primary btn-sm" onclick="saveAnnouncement()">Save announcement</button>
                         </div>
                     </div>
                 </div>
@@ -206,53 +156,49 @@
                     <div class="admin-topbar">
                         <div>
                             <h1>Projects</h1>
-                            <p>Edit existing projects or add a new one.</p>
+                            <p>Manage the projects shown on the site</p>
                         </div>
                     </div>
                     <div class="admin-tab-content">
-                        <div class="admin-projects-grid" id="admin-projects-editor-grid">
-                            <!-- Renders via JS -->
-                        </div>
-
-                        <hr style="margin:20px 0;">
-
-                        <!-- ADD NEW PROJECT -->
-                        <div class="admin-card">
-                            <div class="admin-card-title">
-                                <i data-lucide="plus-circle"></i>
-                                Add New Project
-                            </div>
-                            <div class="admin-card-desc">Fill in the fields below to publish a new project.</div>
-                            <div class="admin-grid-2" style="margin-top:12px;">
+                        <div class="admin-card" style="margin-bottom:16px;">
+                            <div class="admin-card-title"><i data-lucide="plus-circle"></i> Add New Project</div>
+                            <div class="admin-grid-2">
                                 <div class="admin-input-group">
-                                    <label class="admin-input-label">Project name <span style="color:var(--red);">*</span></label>
-                                    <input type="text" id="np-name" class="admin-input" placeholder="e.g. VortexDB">
+                                    <label class="admin-input-label">Project name *</label>
+                                    <input class="admin-input" id="np-name" placeholder="WaveMirror">
                                 </div>
                                 <div class="admin-input-group">
-                                    <label class="admin-input-label">Project type</label>
-                                    <input type="text" id="np-type" class="admin-input" placeholder="e.g. Web App">
+                                    <label class="admin-input-label">Project URL *</label>
+                                    <input class="admin-input" id="np-link" placeholder="https://wavemirror.app">
+                                </div>
+                                <div class="admin-input-group">
+                                    <label class="admin-input-label">Type</label>
+                                    <input class="admin-input" id="np-type" placeholder="Web App">
                                 </div>
                                 <div class="admin-input-group">
                                     <label class="admin-input-label">Tech stack</label>
-                                    <input type="text" id="np-tech" class="admin-input" placeholder="e.g. React, Firebase">
+                                    <input class="admin-input" id="np-tech" placeholder="React, Firebase">
                                 </div>
                                 <div class="admin-input-group">
-                                    <label class="admin-input-label">Link <span style="color:var(--red);">*</span></label>
-                                    <input type="text" id="np-link" class="admin-input" placeholder="https://...">
-                                </div>
-                                <div class="admin-input-group">
-                                    <label class="admin-input-label">Logo path</label>
-                                    <input type="text" id="np-logo" class="admin-input" placeholder="assets/logo.png">
+                                    <label class="admin-input-label">Logo URL</label>
+                                    <input class="admin-input" id="np-logo" placeholder="assets/wavemirror.png">
                                 </div>
                             </div>
                             <div class="admin-input-group">
                                 <label class="admin-input-label">Description</label>
-                                <textarea id="np-desc" class="admin-textarea" placeholder="Short description..."></textarea>
+                                <textarea class="admin-textarea" id="np-desc" placeholder="Short project description…" rows="2"></textarea>
                             </div>
-                            <button onclick="addProject()" class="btn btn-primary btn-sm">
-                                <i data-lucide="plus" style="width:12px;height:12px;"></i>
+                            <button class="btn btn-primary btn-sm" onclick="addProject()">
+                                <i data-lucide="plus" style="width:14px;height:14px;"></i>
                                 Add project
                             </button>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-card-title"><i data-lucide="folder-open"></i> Existing Projects</div>
+                            <div id="admin-projects-editor-grid">
+                                <p style="color:var(--text-dim);font-size:0.8125rem;">Loading…</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -262,42 +208,41 @@
                     <div class="admin-topbar">
                         <div>
                             <h1>Team</h1>
-                            <p>Edit, add, or remove team members.</p>
+                            <p>Manage team members shown on the About page</p>
                         </div>
                     </div>
                     <div class="admin-tab-content">
-                        <div id="admin-team-list" style="margin-bottom:20px;">
-                            <!-- Renders via JS -->
-                        </div>
-                        <hr style="margin-bottom:20px;">
-                        <div class="admin-card">
-                            <div class="admin-card-title">
-                                <i data-lucide="user-plus"></i>
-                                Add Team Member
-                            </div>
-                            <div class="admin-card-desc">Fill in the details to add a new member.</div>
-                            <div class="admin-grid-2" style="margin-top:12px;">
+                        <div class="admin-card" style="margin-bottom:16px;">
+                            <div class="admin-card-title"><i data-lucide="user-plus"></i> Add Team Member</div>
+                            <div class="admin-grid-2">
                                 <div class="admin-input-group">
-                                    <label class="admin-input-label">Name</label>
-                                    <input type="text" id="tm-name" class="admin-input" placeholder="Full name">
+                                    <label class="admin-input-label">Name *</label>
+                                    <input class="admin-input" id="nm-name" placeholder="Akshansh Sinha">
                                 </div>
                                 <div class="admin-input-group">
                                     <label class="admin-input-label">Role</label>
-                                    <input type="text" id="tm-role" class="admin-input" placeholder="e.g. UI/UX Designer">
+                                    <input class="admin-input" id="nm-role" placeholder="Co-Founder, Full-Stack">
                                 </div>
                                 <div class="admin-input-group">
-                                    <label class="admin-input-label">Instagram handle</label>
-                                    <input type="text" id="tm-insta" class="admin-input" placeholder="e.g. aarav_sharma">
+                                    <label class="admin-input-label">GitHub</label>
+                                    <input class="admin-input" id="nm-github" placeholder="https://github.com/...">
                                 </div>
                                 <div class="admin-input-group">
-                                    <label class="admin-input-label">Portfolio URL</label>
-                                    <input type="text" id="tm-portfolio" class="admin-input" placeholder="e.g. aarav.dev">
+                                    <label class="admin-input-label">Instagram</label>
+                                    <input class="admin-input" id="nm-instagram" placeholder="@username">
                                 </div>
                             </div>
-                            <button onclick="addTeamMember()" class="btn btn-primary btn-sm">
-                                <i data-lucide="plus" style="width:12px;height:12px;"></i>
+                            <button class="btn btn-primary btn-sm" onclick="addTeamMember()">
+                                <i data-lucide="plus" style="width:14px;height:14px;"></i>
                                 Add member
                             </button>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-card-title"><i data-lucide="users"></i> Current Team</div>
+                            <div id="admin-team-list">
+                                <p style="color:var(--text-dim);font-size:0.8125rem;">Loading…</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -307,58 +252,66 @@
                     <div class="admin-topbar">
                         <div>
                             <h1>Settings</h1>
-                            <p>Configure integrations and system settings.</p>
+                            <p>Site-wide configuration and status</p>
                         </div>
                     </div>
                     <div class="admin-tab-content">
                         <div class="admin-grid-2">
+                            <!-- Downloads -->
                             <div class="admin-card">
-                                <div class="admin-card-title">
-                                    <i data-lucide="key"></i>
-                                    Gemini API Key
+                                <div class="admin-card-title"><i data-lucide="download"></i> Download Counter</div>
+                                <div class="admin-card-desc">Manual override for the downloads count shown on the site.</div>
+                                <div class="admin-input-group">
+                                    <label class="admin-input-label">Count</label>
+                                    <input class="admin-input" id="admin-downloads" type="number" placeholder="1700">
                                 </div>
-                                <div class="admin-card-desc">Optional. Used for AI assistant features.</div>
+                                <button class="btn btn-primary btn-sm" onclick="saveDownloads()">Save</button>
+                            </div>
+
+                            <!-- Firebase Status -->
+                            <div class="admin-card">
+                                <div class="admin-card-title"><i data-lucide="wifi"></i> Database Status</div>
+                                <div class="admin-card-desc">Real-time sync status with Firebase.</div>
+                                <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+                                    <span class="admin-sync-dot" id="settings-sync-dot"></span>
+                                    <span style="font-size:0.8125rem;color:var(--text-muted);" id="db-status-text">Connecting…</span>
+                                </div>
+                            </div>
+
+                            <!-- Maintenance Mode -->
+                            <div class="admin-card" style="grid-column:1/-1;">
+                                <div class="admin-card-title"><i data-lucide="wrench"></i> Maintenance Mode</div>
+                                <div class="admin-card-desc">When enabled, visitors see a maintenance page. Admins can always access this panel.</div>
+                                <label class="admin-toggle" style="margin-bottom:16px;">
+                                    <input type="checkbox" id="admin-maintenance-toggle"
+                                        onchange="toggleMaintenanceMode(this.checked)">
+                                    <span class="admin-toggle-label">Enable maintenance mode</span>
+                                </label>
+                                <div class="admin-input-group">
+                                    <label class="admin-input-label">Maintenance message</label>
+                                    <textarea class="admin-textarea" id="admin-maintenance-reason"
+                                        placeholder="VortexApps is currently undergoing scheduled maintenance. We'll be back shortly."
+                                        rows="2"></textarea>
+                                </div>
+                                <button class="btn btn-secondary btn-sm" onclick="updateMaintenanceReason(document.getElementById('admin-maintenance-reason').value)">
+                                    Save message
+                                </button>
+                            </div>
+
+                            <!-- Gemini API Key -->
+                            <div class="admin-card" style="grid-column:1/-1;">
+                                <div class="admin-card-title"><i data-lucide="key"></i> Gemini API Key</div>
+                                <div class="admin-card-desc">Stored locally in this browser only. Never synced to the server.</div>
                                 <div class="admin-input-group">
                                     <label class="admin-input-label">API Key</label>
-                                    <input type="password" id="admin-gemini-key" class="admin-input" placeholder="AIza...">
+                                    <input class="admin-input" id="admin-gemini-key" type="password" placeholder="AIza...">
                                 </div>
-                                <button onclick="updateLocalGeminiKey()" class="btn btn-secondary btn-sm">Save key</button>
-                            </div>
-
-                            <div class="admin-card">
-                                <div class="admin-card-title">
-                                    <i data-lucide="shield-alert"></i>
-                                    Maintenance Mode
-                                </div>
-                                <div class="admin-card-desc">Enable to prevent public access to the website.</div>
-                                <div class="admin-toggle" style="margin-top:14px;margin-bottom:12px;">
-                                    <input type="checkbox" id="admin-maintenance-toggle" onchange="toggleMaintenanceMode(this.checked)">
-                                    <label class="admin-toggle-label" for="admin-maintenance-toggle">Enable Maintenance Mode</label>
-                                </div>
-                                <div class="admin-input-group" style="margin-bottom:0;">
-                                    <label class="admin-input-label">Maintenance Message</label>
-                                    <input type="text" id="admin-maintenance-reason" class="admin-input"
-                                           placeholder="e.g. Upgrading databases..."
-                                           onchange="updateMaintenanceReason(this.value)">
-                                </div>
-                            </div>
-
-                            <div class="admin-card">
-                                <div class="admin-card-title">
-                                    <i data-lucide="database"></i>
-                                    Firebase Status
-                                </div>
-                                <div class="admin-card-desc">Real-time sync status with your Firebase database.</div>
-                                <div class="admin-sync-indicator" style="margin-top:10px;gap:6px;">
-                                    <span class="admin-sync-dot" id="settings-sync-dot"></span>
-                                    <span id="db-status-text" style="font-size:0.8125rem;color:var(--text-muted);">Checking...</span>
-                                </div>
+                                <button class="btn btn-secondary btn-sm" onclick="updateLocalGeminiKey()">Save locally</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
-            </main>
+            </div>
         </div>
     </div>
 

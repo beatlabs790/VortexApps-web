@@ -1,44 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Services — VortexApps</title>
-    <meta name="description" content="VortexApps offers AI engineering, full-stack development, product architecture, and AI integration services.">
+    <meta name="description" content="VortexApps offers full-stack web development, AI integrations, and custom software engineering services.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vortexapps.dev/services.html">
     <meta property="og:title" content="Services — VortexApps">
-    <meta property="og:description" content="VortexApps offers AI engineering, full-stack development, product architecture, and AI integration services.">
+    <meta property="og:description" content="VortexApps offers full-stack web development, AI integrations, and custom software engineering services.">
     <meta property="og:image" content="assets/og_image.jpg">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Services — VortexApps">
-    <meta property="twitter:description" content="VortexApps offers AI engineering, full-stack development, product architecture, and AI integration services.">
+    <meta property="twitter:description" content="VortexApps offers full-stack web development, AI integrations, and custom software engineering services.">
     <meta property="twitter:image" content="assets/og_image.jpg">
+    <link rel="canonical" href="https://vortexapps.dev/services.html">
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="index.css">
-    <style>
-        .service-tags, .stack-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 12px;
-        }
-        .tag {
-            font-size: 0.6875rem;
-            font-weight: 500;
-            font-family: var(--mono);
-            padding: 3px 8px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            color: var(--text-muted);
-            background: var(--bg);
-        }
-        .service-card h3 {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            margin-top: 4px;
-            color: var(--text);
-        }
-    </style>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -47,25 +25,16 @@
     <script src="index.js" defer></script>
 </head>
 <body>
-    <!-- LOADING SCREEN -->
     <div id="loading-screen">
-        <div class="ls-logo">
-            <img src="assets/logo.png" alt="VortexApps">
-            VortexApps
-        </div>
+        <div class="ls-logo"><img src="assets/logo.png" alt="VortexApps"> VortexApps</div>
         <div class="ls-spinner"></div>
     </div>
 
-    <!-- ANNOUNCEMENT BAR -->
     <div id="announcement-bar"><span id="announcement-text"></span></div>
 
-    <!-- NAV -->
     <nav id="main-nav">
         <div class="nav-inner">
-            <a href="index.html" class="nav-logo">
-                <img src="assets/logo.png" alt="VortexApps">
-                VortexApps
-            </a>
+            <a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="VortexApps"> VortexApps</a>
             <div class="nav-links" id="nav-links">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About</a>
@@ -74,25 +43,20 @@
                 <a href="contact.html" class="nav-link">Contact</a>
             </div>
             <div class="nav-right">
+                <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" aria-label="Toggle theme"><i data-lucide="moon" id="theme-icon"></i></button>
                 <a href="contact.html" class="btn btn-primary btn-sm">Get in touch</a>
-                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
+                <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
             </div>
         </div>
     </nav>
 
-    <!-- MAIN -->
     <main>
-        <section class="section-sm">
+        <!-- PAGE HEADER -->
+        <section class="hero" style="padding-bottom:64px;">
             <div class="container">
-                <span class="label reveal reveal-1" style="display: block; margin-bottom: 16px;">Services</span>
-                <h1 class="reveal reveal-2" style="font-size: clamp(2rem, 4.5vw, 3.5rem); margin-bottom: 20px; font-weight: 800; letter-spacing: -0.04em;">
-                    What we build.
-                </h1>
-                <p class="reveal reveal-3" style="font-size: 1rem; max-width: 480px; color: var(--text-muted); line-height: 1.7;">
-                    From AI pipelines to full-stack products. We cover everything from architecture to deployment.
-                </p>
+                <span class="label reveal reveal-1" style="display:block;margin-bottom:14px;">Services</span>
+                <h1 class="reveal reveal-2" style="max-width:680px;">What we <span class="accent-word">build</span> for you.</h1>
+                <p class="hero-desc reveal reveal-3">From AI-powered apps to high-performance web platforms — we handle the full stack so you can focus on your business.</p>
             </div>
         </section>
 
@@ -101,79 +65,40 @@
         <!-- SERVICES GRID -->
         <section class="section">
             <div class="container">
+                <div class="section-header">
+                    <span class="label">Capabilities</span>
+                    <h2>Our core services.</h2>
+                </div>
                 <div class="services-grid">
                     <div class="service-card reveal reveal-1">
-                        <div class="service-icon">
-                            <i data-lucide="cpu"></i>
-                        </div>
-                        <h3>Artificial Intelligence</h3>
-                        <p>From custom machine learning models to production LLM infrastructure. We design neural pipelines built to scale.</p>
-                        <div class="service-tags">
-                            <span class="tag">Neural Networks</span>
-                            <span class="tag">NLP & LLMs</span>
-                            <span class="tag">Computer Vision</span>
-                        </div>
+                        <div class="service-icon"><i data-lucide="code-2"></i></div>
+                        <h3>Full-Stack Web Development</h3>
+                        <p>End-to-end web application development using React, Next.js, Node.js, and modern cloud infrastructure.</p>
                     </div>
-
                     <div class="service-card reveal reveal-2">
-                        <div class="service-icon">
-                            <i data-lucide="code-2"></i>
-                        </div>
-                        <h3>Full-Stack Engineering</h3>
-                        <p>Web and mobile applications built for real capacity. UIs that are fast and backends that don't break under load.</p>
-                        <div class="service-tags">
-                            <span class="tag">React & Next.js</span>
-                            <span class="tag">Node.js & Python</span>
-                            <span class="tag">REST APIs</span>
-                        </div>
+                        <div class="service-icon"><i data-lucide="brain-circuit"></i></div>
+                        <h3>AI &amp; ML Integration</h3>
+                        <p>Embed powerful AI features into your product using Google Gemini, OpenAI, and custom ML pipelines.</p>
                     </div>
-
                     <div class="service-card reveal reveal-3">
-                        <div class="service-icon">
-                            <i data-lucide="layers"></i>
-                        </div>
-                        <h3>Product Architecture</h3>
-                        <p>System design and database architecture for products that need to grow. Designed for security and stability.</p>
-                        <div class="service-tags">
-                            <span class="tag">System Design</span>
-                            <span class="tag">DB Architecture</span>
-                            <span class="tag">DevOps & Cloud</span>
-                        </div>
+                        <div class="service-icon"><i data-lucide="smartphone"></i></div>
+                        <h3>Mobile Applications</h3>
+                        <p>Cross-platform mobile apps with seamless UX, real-time sync, and native-feel performance.</p>
                     </div>
-
                     <div class="service-card reveal reveal-4">
-                        <div class="service-icon">
-                            <i data-lucide="plug"></i>
-                        </div>
-                        <h3>AI Integration</h3>
-                        <p>Embed AI capabilities into your existing applications. We handle orchestration, fine-tuning, and APIs.</p>
-                        <div class="service-tags">
-                            <span class="tag">AI Orchestration</span>
-                            <span class="tag">Model Finetuning</span>
-                            <span class="tag">Automation</span>
-                        </div>
+                        <div class="service-icon"><i data-lucide="database"></i></div>
+                        <h3>Backend &amp; APIs</h3>
+                        <p>Scalable REST and WebSocket APIs, database architecture, authentication, and cloud deployment.</p>
                     </div>
-                </div>
-
-                <!-- TECH STACK -->
-                <div style="margin-top: 80px;">
-                    <div class="section-header">
-                        <span class="label">Technology stack</span>
-                        <h2>What we work with.</h2>
+                    <div class="service-card reveal reveal-1">
+                        <div class="service-icon"><i data-lucide="layout-dashboard"></i></div>
+                        <h3>UI/UX Design</h3>
+                        <p>Clean, functional interfaces designed for conversion and usability — from wireframe to pixel-perfect delivery.</p>
                     </div>
-                    <div class="stack-row reveal reveal-3">
-                        <span class="tag">HTML5 / CSS3</span>
-                        <span class="tag">JavaScript (ES6+)</span>
-                        <span class="tag">React</span>
-                        <span class="tag">Next.js</span>
-                        <span class="tag">Node.js</span>
-                        <span class="tag">Python</span>
-                        <span class="tag">Firebase</span>
-                        <span class="tag">Tailwind CSS</span>
-                        <span class="tag">PostgreSQL</span>
-                        <span class="tag">WebSockets</span>
-                        <span class="tag">Google Gemini</span>
-                        <span class="tag">Git</span>
+                    <div class="service-card reveal reveal-2">
+                        <div class="service-icon"><i data-lucide="shield-check"></i></div>
+                        <h3>Consulting &amp; Code Review</h3>
+                        <p>Architecture reviews, performance audits, and strategic technical guidance for your engineering team.</p>
                     </div>
                 </div>
             </div>
@@ -185,32 +110,25 @@
         <section class="section-sm">
             <div class="container">
                 <div class="cta-strip">
-                    <h2>Need one of these?</h2>
-                    <p>Tell us about your project and we'll get back to you within 24 hours.</p>
-                    <a href="contact.html" class="btn btn-primary btn-lg">Get in touch</a>
+                    <span class="label" style="display:block;margin-bottom:14px;">Ready?</span>
+                    <h2>Let's start building.</h2>
+                    <p>Tell us what you're working on and we'll figure out the best path forward together.</p>
+                    <a href="contact.html" class="btn btn-primary btn-lg">Start a conversation</a>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-inner">
                 <div>
-                    <div class="footer-brand">
-                        <img src="assets/logo.png" alt="VortexApps">
-                        VortexApps
-                    </div>
-                    <div class="footer-copy">© 2024 VortexApps. Made in India.</div>
+                    <div class="footer-brand"><img src="assets/logo.png" alt="VortexApps"> VortexApps</div>
+                    <div class="footer-copy">© 2025 VortexApps. Made in India.</div>
                 </div>
                 <div class="footer-links-group">
                     <h4>Navigation</h4>
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="services.html">Services</a>
-                    <a href="projects.html">Projects</a>
-                    <a href="contact.html">Contact</a>
+                    <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
                 </div>
                 <div class="footer-links-group">
                     <h4>Connect</h4>
@@ -221,8 +139,11 @@
                 </div>
                 <div class="footer-links-group">
                     <h4>Legal</h4>
-                    <a href="privacy.html">Privacy Policy</a>
-                    <a href="terms.html">Terms of Service</a>
+                    <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a>
+                </div>
+                <div class="footer-links-group">
+                    <h4>Admin</h4>
+                    <a href="admin.html">Dashboard</a>
                 </div>
             </div>
         </div>
