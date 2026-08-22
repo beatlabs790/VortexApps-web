@@ -794,7 +794,7 @@ function dismissLoadingScreen() {
     const loader = document.getElementById('loading-screen');
     if (!loader) return;
     loader.classList.add('fade-out');
-    setTimeout(() => loader.remove(), 500);
+    setTimeout(() => loader.remove(), 300);
 }
 
 // --- DARK / LIGHT THEME ---
@@ -933,8 +933,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkAdminAuthSession();
     initCookieConsent();
 
-    // Dismiss loading screen after exactly 1 second
-    setTimeout(dismissLoadingScreen, 1000);
+    // Dismiss loading screen after exactly 1 second (700ms delay + 300ms fade out)
+    setTimeout(dismissLoadingScreen, 700);
 
     // Reveal animations — add 'visible' class when in viewport
     const observer = new IntersectionObserver(entries => {

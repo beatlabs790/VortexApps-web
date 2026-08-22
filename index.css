@@ -170,7 +170,7 @@ body::after {
     align-items: center;
     justify-content: center;
     gap: 20px;
-    transition: opacity 0.5s var(--ease);
+    transition: opacity 0.3s var(--ease);
 }
 
 #loading-screen .ls-logo {
