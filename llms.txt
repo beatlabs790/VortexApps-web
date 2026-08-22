@@ -1,0 +1,34 @@
+# VortexApps
+
+VortexApps is a high-performance software development team based in Patna, India. We build AI integrations, scalable web applications, and real-time software systems.
+
+## Services Offered
+- **AI Engineering & Integration**: Developing custom machine learning workflows, embedding Google Gemini models, and designing secure LLM pipelines.
+- **Full-Stack Engineering**: Building responsive frontends (React, Next.js, Tailwind CSS) and scalable backend systems (Node.js, Python, REST APIs).
+- **Product Architecture**: Designing low-latency system design, relational/non-relational database structures, and cost-effective cloud deployments.
+
+## Live Projects
+- **BeatWave**: A premium, open-source audio streaming player built with React and Node for zero-advertisement delivery. [beatwave.de5.net](https://beatwave.de5.net)
+- **WaveMirror**: A search aggregator featuring instant query results, movie reviews, and metadata visualization. [wavemirror.vercel.app](https://wavemirror.vercel.app)
+- **Onyx Chat**: A low-latency websocket messaging system with real-time database synchronization. [onyxchat.de5.net](https://onyxchat.de5.net)
+
+## Core Team
+- **Akshansh Sinha**: Co-Founder & Full-Stack Engineer. Portfolio: [akshanshsinha.vercel.app](https://akshanshsinha.vercel.app)
+- **Aarav Sharma**: Co-Founder & UI/UX Designer. Portfolio: [aaravsharma.netlify.app](https://aaravsharma.netlify.app)
+- **Aarav Singh**: Frontend Developer.
+- **Arshh**: Frontend Developer. Portfolio: [arshit-gautam.vercel.app](https://arshit-gautam.vercel.app)
+
+## Public Sitemap
+- **Homepage**: [vortexapps.dev/](https://vortexapps.dev/)
+- **About**: [vortexapps.dev/about.html](https://vortexapps.dev/about.html)
+- **Services**: [vortexapps.dev/services.html](https://vortexapps.dev/services.html)
+- **Projects**: [vortexapps.dev/projects.html](https://vortexapps.dev/projects.html)
+- **Contact**: [vortexapps.dev/contact.html](https://vortexapps.dev/contact.html)
+- **Privacy Policy**: [vortexapps.dev/privacy.html](https://vortexapps.dev/privacy.html)
+- **Terms of Service**: [vortexapps.dev/terms.html](https://vortexapps.dev/terms.html)
+
+## Support & Contact
+- **Email**: beatwave790@gmail.com
+- **Discord Community**: [discord.gg/spbuDTePSR](https://discord.gg/spbuDTePSR)
+- **Support Platform**: [support-akshansh.vercel.app](https://support-akshansh.vercel.app)
+- **UPI**: `akshanshsinha67@axl`

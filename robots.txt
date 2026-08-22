@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /config.js
+Disallow: /db.json
+
+Sitemap: https://vortexapps.dev/sitemap.xml
